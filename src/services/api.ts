@@ -54,6 +54,17 @@ export const api = {
       headers,
       body: JSON.stringify(productData)
     });
+
+    if (!res.ok) {
+      if (res.status === 413) {
+        throw new Error('Image size is too large (413 Payload Too Large). Please choose a smaller photo or compress it before uploading.');
+      }
+      const errorText = await res.text();
+      let errorJson;
+      try { errorJson = JSON.parse(errorText); } catch(e) {}
+      throw new Error(errorJson?.error || errorJson?.message || `Failed to create product (HTTP ${res.status})`);
+    }
+
     return res.json();
   },
 
@@ -66,6 +77,14 @@ export const api = {
       headers,
       body: JSON.stringify(productData)
     });
+
+    if (!res.ok) {
+      if (res.status === 413) {
+        throw new Error('Image size is too large (413 Payload Too Large).');
+      }
+      throw new Error(`Failed to update product (HTTP ${res.status})`);
+    }
+
     return res.json();
   },
 
@@ -77,6 +96,11 @@ export const api = {
       method: 'DELETE',
       headers
     });
+
+    if (!res.ok) {
+      throw new Error(`Failed to delete product (HTTP ${res.status})`);
+    }
+
     return res.json();
   },
 
@@ -86,6 +110,7 @@ export const api = {
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
     const res = await fetch(`${API_BASE_URL}/orders`, { headers });
+    if (!res.ok) return [];
     return res.json();
   },
 
@@ -95,6 +120,11 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(orderData)
     });
+
+    if (!res.ok) {
+      throw new Error(`Failed to place order (HTTP ${res.status})`);
+    }
+
     return res.json();
   }
 };

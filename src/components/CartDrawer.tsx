@@ -100,7 +100,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       const waMsg = encodeURIComponent(
         `💅 *NEW PRESS-ON NAIL ORDER - PRECY NAILS*\nOrder Ref: #${newOrder.id}\n\n*Order Items:*\n${itemList}\n\nSubtotal: ₦${subtotal.toLocaleString()}\nLogistics (${logistics}): ₦${deliveryFee.toLocaleString()}\nDiscount: -₦${appliedDiscount.amount.toLocaleString()}\n*Total Amount: ₦${total.toLocaleString()}*\n\n*Customer Info:*\nName: ${customerName}\nPhone: ${customerPhone}\nAddress: ${customerAddress}`
       );
-      window.open(`https://wa.me/2348000000000?text=${waMsg}`, '_blank');
+      window.open(`https://wa.me/2348022642840?text=${waMsg}`, '_blank');
     }
 
     onOrderComplete(newOrder);

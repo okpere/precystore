@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Product } from '../types';
 import { STORY_HIGHLIGHTS } from '../data/mockData';
 import { StoryModal } from './StoryModal';
+import { ProductSkeletonGrid } from './ProductSkeleton';
 import { CheckCircle2, ShoppingBag, Eye, Star, Search, Sparkles, MessageSquare, Heart } from 'lucide-react';
 
 interface StorefrontProps {
   products: Product[];
+  isLoading?: boolean;
   onSelectProduct: (product: Product) => void;
   onAddToCart: (product: Product) => void;
   searchQuery: string;
@@ -14,6 +16,7 @@ interface StorefrontProps {
 
 export const Storefront: React.FC<StorefrontProps> = ({
   products,
+  isLoading = false,
   onSelectProduct,
   onAddToCart,
   searchQuery,
@@ -92,7 +95,7 @@ export const Storefront: React.FC<StorefrontProps> = ({
 
             {/* WhatsApp CTA Action Button */}
             <a
-              href="https://wa.me/2348000000000?text=Hi%20PrecyNails!%20I%20want%20to%20order%20custom%20press-on%20nails"
+              href="https://wa.me/2348022642840?text=Hi%20PrecyNails!%20I%20want%20to%20order%20custom%20press-on%20nails"
               target="_blank"
               rel="noreferrer"
               className="btn btn-whatsapp"
@@ -198,7 +201,9 @@ export const Storefront: React.FC<StorefrontProps> = ({
         )}
 
         {/* Product Grid */}
-        {filteredProducts.length === 0 ? (
+        {isLoading ? (
+          <ProductSkeletonGrid count={8} />
+        ) : filteredProducts.length === 0 ? (
           <div className="card" style={{ padding: '48px 20px', textAlign: 'center', background: '#ffffff', border: '1px solid var(--border-color)' }}>
             <Sparkles size={36} color="var(--primary)" style={{ margin: '0 auto 12px auto', display: 'block', opacity: 0.8 }} />
             {products.length === 0 ? (

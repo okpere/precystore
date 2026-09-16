@@ -1,19 +1,57 @@
 import React, { useState } from 'react';
 import { Product, Order } from '../types';
-import { DollarSign, ShoppingBag, TrendingUp, Plus, Edit, Trash2, CheckCircle, Package, Truck, Receipt, Sparkles } from 'lucide-react';
+import { DollarSign, ShoppingBag, TrendingUp, Plus, Edit, Trash2, CheckCircle, Package, Truck, Receipt, Sparkles, AlertTriangle, Loader2 } from 'lucide-react';
 
 interface VendorAdminProps {
   products: Product[];
   orders: Order[];
-  onAddProduct: (product: Product) => void;
+  isLoading?: boolean;
+  onAddProduct: (product: Product) => Promise<any> | void;
   onUpdateStock: (productId: string, newStock: number) => void;
   onUpdateOrderStatus: (orderId: string, status: Order['status']) => void;
   onViewInvoice: (order: Order) => void;
 }
 
+// Client-side canvas image compression to keep Base64 payloads compact (< 200KB)
+const compressImage = (file: File, maxWidth = 1000, quality = 0.8): Promise<string> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxWidth) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxWidth) / height);
+            height = maxWidth;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return resolve(e.target?.result as string);
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => resolve(e.target?.result as string);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
+};
+
 export const VendorAdmin: React.FC<VendorAdminProps> = ({
   products,
   orders,
+  isLoading = false,
   onAddProduct,
   onUpdateStock,
   onUpdateOrderStatus,
@@ -21,7 +59,7 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'analytics' | 'products' | 'orders'>('analytics');
   
-  // Add Product State
+  // Add Product State & Loading
   const [showAddModal, setShowAddModal] = useState(false);
   const [newProdName, setNewProdName] = useState('');
   const [newProdPrice, setNewProdPrice] = useState('');
@@ -29,6 +67,15 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
   const [newProdImage, setNewProdImage] = useState('');
   const [newProdStock, setNewProdStock] = useState('15');
   const [newProdDesc, setNewProdDesc] = useState('');
+  const [isSavingProduct, setIsSavingProduct] = useState(false);
+
+  // Toast Notification State
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const showToast = (type: 'success' | 'error', message: string) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 6000);
+  };
 
   // Expenses State
   const [expenses, setExpenses] = useState<{ id: string; title: string; amount: number; date: string }[]>([
@@ -43,9 +90,15 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
   const totalExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
   const netProfit = totalRevenue - totalExpenses;
 
-  const handleCreateProduct = (e: React.FormEvent) => {
+  const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newProdName || !newProdPrice) return;
+    if (!newProdName || !newProdPrice) {
+      showToast('error', 'Please enter a product name and price.');
+      return;
+    }
+
+    setIsSavingProduct(true);
+    setToast(null);
 
     const newProduct: Product = {
       id: 'n-' + Date.now(),
@@ -62,11 +115,19 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
       sizes: ['XS (3,6,5,7,9)', 'S (2,5,4,6,9)', 'M (1,4,3,5,8)', 'L (0,3,2,4,7)']
     };
 
-    onAddProduct(newProduct);
-    setShowAddModal(false);
-    setNewProdName('');
-    setNewProdPrice('');
-    setNewProdDesc('');
+    try {
+      await onAddProduct(newProduct);
+      showToast('success', '✓ Press-on nail set successfully saved to Supabase!');
+      setShowAddModal(false);
+      setNewProdName('');
+      setNewProdPrice('');
+      setNewProdDesc('');
+      setNewProdImage('');
+    } catch (err: any) {
+      showToast('error', `❌ ${err?.message || 'Failed to save product to database'}`);
+    } finally {
+      setIsSavingProduct(false);
+    }
   };
 
   const handleAddExpense = (e: React.FormEvent) => {
@@ -83,6 +144,37 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
 
   return (
     <div style={{ maxWidth: '1200px', margin: '30px auto', padding: '0 20px', paddingBottom: '60px' }}>
+      {/* Toast Notification Alert Banner */}
+      {toast && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '24px',
+            right: '24px',
+            zIndex: 9999,
+            padding: '14px 20px',
+            borderRadius: 'var(--radius-md)',
+            background: toast.type === 'success' ? '#15803d' : '#be185d',
+            color: 'white',
+            fontWeight: 700,
+            fontSize: '0.9rem',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            maxWidth: '480px'
+          }}
+        >
+          {toast.type === 'success' ? <CheckCircle size={20} /> : <AlertTriangle size={20} />}
+          <span style={{ flex: 1 }}>{toast.message}</span>
+          <button
+            onClick={() => setToast(null)}
+            style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', fontSize: '1rem', fontWeight: 800, padding: '0 4px' }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
       {/* Header & Tabs */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
@@ -267,14 +359,19 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setNewProdImage(reader.result as string);
-                          };
-                          reader.readAsDataURL(file);
+                          try {
+                            const compressedBase64 = await compressImage(file, 1000, 0.8);
+                            setNewProdImage(compressedBase64);
+                          } catch (err) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setNewProdImage(reader.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
                         }
                       }}
                       style={{
@@ -304,7 +401,7 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
                           style={{ width: '44px', height: '44px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }}
                         />
                         <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 700 }}>
-                          ✓ Image Ready to Send!
+                          ✓ Image Optimized & Ready!
                         </span>
                       </div>
                     )}
@@ -317,11 +414,26 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
                     style={{ padding: '10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', height: '70px' }}
                   />
                   <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                    <button type="button" className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowAddModal(false)}>
+                    <button
+                      type="button"
+                      disabled={isSavingProduct}
+                      className="btn btn-secondary"
+                      style={{ flex: 1 }}
+                      onClick={() => setShowAddModal(false)}
+                    >
                       Cancel
                     </button>
-                    <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                      Save Nail Set
+                    <button
+                      type="submit"
+                      disabled={isSavingProduct}
+                      className="btn btn-primary"
+                      style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', opacity: isSavingProduct ? 0.7 : 1 }}
+                    >
+                      {isSavingProduct ? (
+                        <>Saving to Supabase... <Loader2 size={16} className="animate-spin" /></>
+                      ) : (
+                        'Save Nail Set'
+                      )}
                     </button>
                   </div>
                 </form>
@@ -342,7 +454,38 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {products.map((prod) => (
+                {isLoading ? (
+                  Array.from({ length: 4 }).map((_, i) => (
+                    <tr key={i} style={{ borderBottom: '1px solid #f4f4f5' }}>
+                      <td style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div className="skeleton" style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-sm)' }} />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '140px' }}>
+                          <div className="skeleton" style={{ height: '14px', width: '100%' }} />
+                          <div className="skeleton" style={{ height: '10px', width: '50%' }} />
+                        </div>
+                      </td>
+                      <td style={{ padding: '12px 16px' }}>
+                        <div className="skeleton" style={{ height: '14px', width: '90px' }} />
+                      </td>
+                      <td style={{ padding: '12px 16px' }}>
+                        <div className="skeleton" style={{ height: '14px', width: '60px' }} />
+                      </td>
+                      <td style={{ padding: '12px 16px' }}>
+                        <div className="skeleton" style={{ height: '18px', width: '70px', borderRadius: 'var(--radius-full)' }} />
+                      </td>
+                      <td style={{ padding: '12px 16px' }}>
+                        <div className="skeleton" style={{ height: '24px', width: '60px' }} />
+                      </td>
+                    </tr>
+                  ))
+                ) : products.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                      No press-on nail sets in inventory catalog yet. Click "+ Add New Nail Set" to create one.
+                    </td>
+                  </tr>
+                ) : (
+                  products.map((prod) => (
                   <tr key={prod.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
                     <td style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <img src={prod.image} alt={prod.name} style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-sm)', objectFit: 'cover' }} />
@@ -379,7 +522,7 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
                       </div>
                     </td>
                   </tr>
-                ))}
+                )))}
               </tbody>
             </table>
           </div>

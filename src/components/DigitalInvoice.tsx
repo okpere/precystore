@@ -50,7 +50,7 @@ export const DigitalInvoice: React.FC<DigitalInvoiceProps> = ({ order, onBackToS
               Official Press-On E-Receipt & Invoice | IG: @precynails.ng
             </p>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Gwarinpa / Lokogoma, Abuja, Nigeria | Support: +234 800 000 0000
+              Gwarinpa / Lokogoma, Abuja, Nigeria | Support: +234 802 264 2840
             </p>
           </div>
 

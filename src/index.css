@@ -57,6 +57,23 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent-black);
 }
 
+/* Skeleton Loading Shimmer Effect */
+.skeleton {
+  background: linear-gradient(90deg, #f4f4f5 25%, #e4e4e7 50%, #f4f4f5 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite ease-in-out;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

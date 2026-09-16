@@ -23,7 +23,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     const message = encodeURIComponent(
       `Hi PrecyNails! I want to order press-on set:\n\n💅 *${product.name}*\nPrice: ₦${product.price.toLocaleString()}\nShape/Length: ${selectedShape}\nNail Size: ${selectedSize}\nLink: https://precynails.ng/item/${product.id}`
     );
-    window.open(`https://wa.me/2348000000000?text=${message}`, '_blank');
+    window.open(`https://wa.me/2348022642840?text=${message}`, '_blank');
   };
 
   return (

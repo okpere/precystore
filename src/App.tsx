@@ -30,6 +30,8 @@ export function App() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [activeInvoiceOrder, setActiveInvoiceOrder] = useState<Order | null>(null);
 
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
   // Clear any old local storage product/order caches on startup
   useEffect(() => {
     try {
@@ -43,6 +45,7 @@ export function App() {
   // Load products directly from Backend API / Supabase database on mount
   useEffect(() => {
     async function loadApiProducts() {
+      setIsLoadingProducts(true);
       try {
         const fetched = await api.getProducts();
         if (Array.isArray(fetched)) {
@@ -51,6 +54,8 @@ export function App() {
       } catch (err) {
         console.error('Error fetching products from API:', err);
         setProducts([]);
+      } finally {
+        setIsLoadingProducts(false);
       }
     }
     loadApiProducts();
@@ -140,11 +145,14 @@ export function App() {
 
   // Vendor Admin Operations
   const handleAddProduct = async (newProduct: Product) => {
-    setProducts((prev) => [newProduct, ...prev]);
     try {
-      await api.createProduct(newProduct, vendorUser.token || 'demo-token');
-    } catch (err) {
-      console.error('Failed API product creation', err);
+      const created = await api.createProduct(newProduct, vendorUser.token);
+      const savedProd = (created && created.id) ? created : newProduct;
+      setProducts((prev) => [savedProd, ...prev]);
+      return savedProd;
+    } catch (err: any) {
+      console.error('Failed API product creation:', err);
+      throw err;
     }
   };
 
@@ -215,6 +223,7 @@ export function App() {
         {viewMode === 'storefront' && (
           <Storefront
             products={products}
+            isLoading={isLoadingProducts}
             onSelectProduct={setSelectedProduct}
             onAddToCart={handleAddToCart}
             searchQuery={searchQuery}
@@ -227,6 +236,7 @@ export function App() {
             <VendorAdmin
               products={products}
               orders={orders}
+              isLoading={isLoadingProducts}
               onAddProduct={handleAddProduct}
               onUpdateStock={handleUpdateStock}
               onUpdateOrderStatus={handleUpdateOrderStatus}

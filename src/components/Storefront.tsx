@@ -174,11 +174,12 @@ export const Storefront: React.FC<StorefrontProps> = ({
 
         {/* Product Grid */}
         {filteredProducts.length === 0 ? (
-          <div className="card" style={{ padding: '36px 20px', textAlign: 'center' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>No press-on nail sets found matching "{searchQuery}"</p>
-            <button className="btn btn-secondary" style={{ marginTop: '14px', fontSize: '0.85rem' }} onClick={() => { onSearchChange(''); setSelectedCategory('All'); }}>
-              Reset Filters
-            </button>
+          <div className="card" style={{ padding: '48px 20px', textAlign: 'center', background: '#fffdfa', border: '1px stroke var(--border-color)' }}>
+            <Sparkles size={36} color="var(--primary)" style={{ margin: '0 auto 12px auto', display: 'block', opacity: 0.8 }} />
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '6px' }}>No press-on nail sets in shop yet</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto' }}>
+              The catalog is ready! Log in to the <a href="#vendor" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'underline' }}>Vendor Portal (#vendor)</a> to add your handcrafted press-on sets.
+            </p>
           </div>
         ) : (
           <div

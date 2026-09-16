@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Product, CartItem, Order, ViewMode, VendorUser } from './types';
-import { INITIAL_PRODUCTS } from './data/mockData';
 import { Navbar } from './components/Navbar';
 import { Storefront } from './components/Storefront';
 import { ProductModal } from './components/ProductModal';
@@ -8,27 +7,47 @@ import { CartDrawer } from './components/CartDrawer';
 import { DigitalInvoice } from './components/DigitalInvoice';
 import { VendorAdmin } from './components/VendorAdmin';
 import { VendorLogin } from './components/VendorLogin';
+import {
+  getStoredProducts,
+  saveStoredProducts,
+  getStoredOrders,
+  saveStoredOrders,
+  getStoredVendorSession,
+  saveStoredVendorSession,
+  clearVendorSession
+} from './services/storage';
+import { api } from './services/api';
 import { Lock } from 'lucide-react';
 
 export function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('storefront');
-  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>(getStoredProducts);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Vendor Auth State - Default false for public customer view
-  const [vendorUser, setVendorUser] = useState<VendorUser>({
-    email: '',
-    handle: '',
-    shopName: '',
-    isLoggedIn: false
-  });
+  // Vendor Auth State - Persisted session
+  const [vendorUser, setVendorUser] = useState<VendorUser>(getStoredVendorSession);
 
-  // Orders & active invoice
-  const [orders, setOrders] = useState<Order[]>([]);
+  // Orders & active invoice - Persisted orders
+  const [orders, setOrders] = useState<Order[]>(getStoredOrders);
   const [activeInvoiceOrder, setActiveInvoiceOrder] = useState<Order | null>(null);
+
+  // Sync products to local storage whenever they change
+  useEffect(() => {
+    saveStoredProducts(products);
+  }, [products]);
+
+  // Sync orders to local storage whenever they change
+  useEffect(() => {
+    saveStoredOrders(orders);
+  }, [orders]);
+
+  // Sync vendor session to local storage
+  useEffect(() => {
+    saveStoredVendorSession(vendorUser);
+  }, [vendorUser]);
 
   // Hash-based routing for dedicated /vendor path
   useEffect(() => {
@@ -117,6 +136,7 @@ export function App() {
   };
 
   const handleLogout = () => {
+    clearVendorSession();
     setVendorUser({ email: '', handle: '', shopName: '', isLoggedIn: false });
     window.location.hash = '';
     setViewMode('storefront');

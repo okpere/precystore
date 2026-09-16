@@ -20,8 +20,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const [selectedSize, setSelectedSize] = useState<string>(product.sizes ? product.sizes[0] : 'S (2,5,4,6,9)');
 
   const handleWhatsAppBuy = () => {
+    const productUrl = `${window.location.origin}/#product=${product.id}`;
     const message = encodeURIComponent(
-      `Hi PrecyNails! I want to order press-on set:\n\n💅 *${product.name}*\nPrice: ₦${product.price.toLocaleString()}\nShape/Length: ${selectedShape}\nNail Size: ${selectedSize}\nLink: https://precynails.ng/item/${product.id}`
+      `Hi PrecyNails! I want to order press-on set:\n\n💅 *${product.name}*\nPrice: ₦${product.price.toLocaleString()}\nShape/Length: ${selectedShape}\nNail Size: ${selectedSize}\nLink: ${productUrl}`
     );
     window.open(`https://wa.me/2348022642840?text=${message}`, '_blank');
   };

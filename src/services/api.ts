@@ -114,6 +114,12 @@ export const api = {
     return res.json();
   },
 
+  async getOrderById(id: string) {
+    const res = await fetch(`${API_BASE_URL}/orders/${id}`);
+    if (!res.ok) return null;
+    return res.json();
+  },
+
   async createOrder(orderData: any) {
     const res = await fetch(`${API_BASE_URL}/orders`, {
       method: 'POST',

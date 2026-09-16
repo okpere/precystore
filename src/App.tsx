@@ -82,15 +82,64 @@ export function App() {
     saveStoredVendorSession(vendorUser);
   }, [vendorUser]);
 
-  // Route handling for dedicated /adminvendor path
+  // Route handling for /adminvendor and deep links (#order=ORD-xxx, #product=xxx)
   useEffect(() => {
-    const handleRouteChange = () => {
-      const hash = window.location.hash.toLowerCase();
+    const handleRouteChange = async () => {
+      const hash = window.location.hash;
       const path = window.location.pathname.toLowerCase();
+
+      // 1. Order Deep Link (#order=ORD-xxx, #invoice=ORD-xxx)
+      let orderIdParam = '';
+      if (hash.startsWith('#order=')) orderIdParam = hash.replace('#order=', '');
+      else if (hash.startsWith('#invoice=')) orderIdParam = hash.replace('#invoice=', '');
+      else {
+        const searchParams = new URLSearchParams(window.location.search);
+        orderIdParam = searchParams.get('order') || searchParams.get('invoice') || '';
+      }
+
+      if (orderIdParam) {
+        const existingOrder = orders.find((o) => o.id.toLowerCase() === orderIdParam.toLowerCase());
+        if (existingOrder) {
+          setActiveInvoiceOrder(existingOrder);
+          setViewMode('invoice');
+          return;
+        } else {
+          try {
+            const fetchedOrder = await api.getOrderById(orderIdParam);
+            if (fetchedOrder && fetchedOrder.id) {
+              setActiveInvoiceOrder(fetchedOrder);
+              setViewMode('invoice');
+              return;
+            }
+          } catch (e) {
+            console.error('Error fetching deep linked order:', e);
+          }
+        }
+      }
+
+      // 2. Product Deep Link (#product=xxx)
+      if (hash.startsWith('#product=')) {
+        const prodId = hash.replace('#product=', '');
+        const existingProd = products.find((p) => p.id === prodId);
+        if (existingProd) {
+          setSelectedProduct(existingProd);
+        } else {
+          try {
+            const fetchedProd = await api.getProductById(prodId);
+            if (fetchedProd && fetchedProd.id) {
+              setSelectedProduct(fetchedProd);
+            }
+          } catch (e) {
+            console.error('Error fetching deep linked product:', e);
+          }
+        }
+      }
+
+      // 3. Admin Vendor Route (/adminvendor)
       if (
-        hash === '#adminvendor' ||
-        hash === '#vendor' ||
-        hash === '#admin' ||
+        hash.toLowerCase() === '#adminvendor' ||
+        hash.toLowerCase() === '#vendor' ||
+        hash.toLowerCase() === '#admin' ||
         path.startsWith('/adminvendor') ||
         path.startsWith('/vendor')
       ) {
@@ -109,7 +158,7 @@ export function App() {
       window.removeEventListener('hashchange', handleRouteChange);
       window.removeEventListener('popstate', handleRouteChange);
     };
-  }, [vendorUser.isLoggedIn]);
+  }, [vendorUser.isLoggedIn, orders, products]);
 
   // Cart operations
   const handleAddToCart = (product: Product, size?: string, shape?: string) => {

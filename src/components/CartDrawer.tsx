@@ -97,8 +97,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         .map((i) => `• 💅 *${i.product.name}*\n   Shape/Length: ${i.selectedShape || 'Almond'}\n   Size: ${i.selectedSize || 'Standard'}\n   Qty: x${i.quantity} = ₦${(i.product.price * i.quantity).toLocaleString()}`)
         .join('\n\n');
 
+      const orderPageUrl = `${window.location.origin}/#order=${newOrder.id}`;
+
       const waMsg = encodeURIComponent(
-        `💅 *NEW PRESS-ON NAIL ORDER - PRECY NAILS*\nOrder Ref: #${newOrder.id}\n\n*Order Items:*\n${itemList}\n\nSubtotal: ₦${subtotal.toLocaleString()}\nLogistics (${logistics}): ₦${deliveryFee.toLocaleString()}\nDiscount: -₦${appliedDiscount.amount.toLocaleString()}\n*Total Amount: ₦${total.toLocaleString()}*\n\n*Customer Info:*\nName: ${customerName}\nPhone: ${customerPhone}\nAddress: ${customerAddress}`
+        `💅 *NEW PRESS-ON NAIL ORDER - PRECY NAILS*\nOrder Ref: #${newOrder.id}\n\n*Order Items:*\n${itemList}\n\nSubtotal: ₦${subtotal.toLocaleString()}\nLogistics (${logistics}): ₦${deliveryFee.toLocaleString()}\nDiscount: -₦${appliedDiscount.amount.toLocaleString()}\n*Total Amount: ₦${total.toLocaleString()}*\n\n*Customer Info:*\nName: ${customerName}\nPhone: ${customerPhone}\nAddress: ${customerAddress}\n\n🔗 *View Digital Receipt & Order Page:*\n${orderPageUrl}`
       );
       window.open(`https://wa.me/2348022642840?text=${waMsg}`, '_blank');
     }

@@ -78,7 +78,7 @@ export const Storefront: React.FC<StorefrontProps> = ({
 
                 {/* Tagline / Bio */}
                 <p style={{ color: '#fefce8', fontSize: '0.84rem', marginTop: '6px', lineHeight: 1.4 }}>
-                  Handcrafted Reusable Press-On Nails & Gel Nail Art | 📍 Ikeja, Lagos | 🚚 Same Day Delivery
+                  Handcrafted Reusable Press-On Nails & Gel Nail Art | 📍 Gwarinpa / Lokogoma, Abuja | 🚚 Same Day Delivery
                 </p>
 
                 {/* Instagram Profile Metrics */}
@@ -315,7 +315,7 @@ export const Storefront: React.FC<StorefrontProps> = ({
                     overflow: 'hidden',
                     position: 'relative',
                     cursor: 'pointer',
-                    background: '#fdf2f8'
+                    background: '#f4f4f5'
                   }}
                   className="product-img-container"
                   onClick={() => onSelectProduct(product)}

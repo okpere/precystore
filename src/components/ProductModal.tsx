@@ -63,7 +63,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             top: '16px',
             right: '16px',
             zIndex: 10,
-            background: '#fdf2f8',
+            background: '#f4f4f5',
             border: 'none',
             borderRadius: '50%',
             width: '36px',
@@ -72,7 +72,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            color: 'var(--primary)'
+            color: 'var(--text-main)'
           }}
         >
           <X size={20} />
@@ -80,8 +80,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
           {/* Images Gallery */}
-          <div style={{ padding: '24px', background: '#fdf2f8', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ height: '360px', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: '#fbcfe8' }}>
+          <div style={{ padding: '24px', background: '#fafafa', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ height: '360px', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: '#f4f4f5' }}>
               <img src={activeImage} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
 
@@ -187,7 +187,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                           padding: '6px 12px',
                           borderRadius: 'var(--radius-full)',
                           border: selectedSize === size ? '2px solid var(--primary)' : '1px solid var(--border-color)',
-                          background: selectedSize === size ? 'var(--primary-light)' : '#fdf2f8',
+                          background: selectedSize === size ? 'var(--primary-light)' : '#f4f4f5',
                           color: selectedSize === size ? 'var(--primary)' : 'var(--text-main)',
                           fontWeight: 600,
                           fontSize: '0.78rem',
@@ -202,7 +202,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               )}
 
               {/* Included Prep Kit notice */}
-              <div style={{ background: '#fdf2f8', padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1px solid #fbcfe8', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.82rem', color: '#831843' }}>
+              <div style={{ background: '#fffbeb', padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1px solid #fde68a', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.82rem', color: '#b38832' }}>
                 <Sparkles size={18} color="var(--primary)" />
                 <span>Every set includes a free <strong>Nail Prep Kit</strong> (Nail Glue, Adhesive Tabs, File & Cuticle Stick).</span>
               </div>

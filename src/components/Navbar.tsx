@@ -72,7 +72,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   border: '1px solid var(--border-color)',
                   fontSize: '0.85rem',
                   outline: 'none',
-                  background: '#fdf2f8',
+                  background: '#fafafa',
                   transition: 'border 0.2s ease'
                 }}
               />
@@ -199,7 +199,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               style={{
-                background: '#fdf2f8',
+                background: '#fafafa',
                 border: '1px solid var(--border-color)',
                 padding: '8px',
                 borderRadius: 'var(--radius-md)',

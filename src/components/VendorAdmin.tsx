@@ -192,7 +192,7 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '16px' }}>Expense History Log</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {expenses.map((exp) => (
-                  <div key={exp.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#fdf2f8', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+                  <div key={exp.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#f4f4f5', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
                     <div>
                       <div style={{ fontWeight: 700, fontSize: '0.92rem' }}>{exp.title}</div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{exp.date}</div>
@@ -288,7 +288,7 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
           <div className="card" style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
               <thead>
-                <tr style={{ background: '#fdf2f8', borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)' }}>
+                <tr style={{ background: '#f4f4f5', borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)' }}>
                   <th style={{ padding: '12px 16px' }}>Nail Item</th>
                   <th style={{ padding: '12px 16px' }}>Category</th>
                   <th style={{ padding: '12px 16px' }}>Price</th>
@@ -298,7 +298,7 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
               </thead>
               <tbody>
                 {products.map((prod) => (
-                  <tr key={prod.id} style={{ borderBottom: '1px solid #fdf2f8' }}>
+                  <tr key={prod.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
                     <td style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <img src={prod.image} alt={prod.name} style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-sm)', objectFit: 'cover' }} />
                       <div>
@@ -355,7 +355,7 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {orders.map((ord) => (
                 <div key={ord.id} className="card" style={{ padding: '20px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', borderBottom: '1px solid #fdf2f8', paddingBottom: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', borderBottom: '1px solid #f4f4f5', paddingBottom: '12px' }}>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ fontWeight: 800, fontSize: '1.1rem' }}>Order #{ord.id}</span>

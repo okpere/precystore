@@ -115,8 +115,8 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
         {!isRegistering && (
           <div
             style={{
-              background: '#fdf2f8',
-              border: '1px solid #db2777',
+              background: '#fafafa',
+              border: '1px solid #ca9e44',
               padding: '12px 16px',
               borderRadius: 'var(--radius-md)',
               marginBottom: '20px',

@@ -36,7 +36,7 @@ export const DigitalInvoice: React.FC<DigitalInvoiceProps> = ({ order, onBackToS
         id="printable-receipt"
       >
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #fdf2f8', paddingBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #f4f4f5', paddingBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -50,12 +50,12 @@ export const DigitalInvoice: React.FC<DigitalInvoiceProps> = ({ order, onBackToS
               Official Press-On E-Receipt & Invoice | IG: @precynails.ng
             </p>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Ikeja City Mall Plaza, Lagos, Nigeria | Support: +234 800 000 0000
+              Gwarinpa / Lokogoma, Abuja, Nigeria | Support: +234 800 000 0000
             </p>
           </div>
 
           <div style={{ textAlign: 'right' }}>
-            <span className="badge badge-purple" style={{ fontSize: '0.82rem', padding: '4px 12px' }}>
+            <span className="badge badge-gold" style={{ fontSize: '0.82rem', padding: '4px 12px' }}>
               ✓ NAIL ORDER CONFIRMED
             </span>
             <div style={{ fontSize: '1.1rem', fontWeight: 800, marginTop: '8px', color: 'var(--text-main)' }}>
@@ -68,7 +68,7 @@ export const DigitalInvoice: React.FC<DigitalInvoiceProps> = ({ order, onBackToS
         </div>
 
         {/* Customer & Delivery details */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', margin: '24px 0', background: '#fdf2f8', padding: '20px', borderRadius: 'var(--radius-md)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', margin: '24px 0', background: '#fafafa', padding: '20px', borderRadius: 'var(--radius-md)' }}>
           <div>
             <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '6px' }}>
               Customer Details:
@@ -89,7 +89,7 @@ export const DigitalInvoice: React.FC<DigitalInvoiceProps> = ({ order, onBackToS
             </div>
             <div style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Address: {order.customerAddress}</div>
             <div style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '4px' }}>
-              Status: <strong style={{ color: '#db2777' }}>Processing for Studio Dispatch</strong>
+              Status: <strong style={{ color: 'var(--primary)' }}>Processing for Studio Dispatch</strong>
             </div>
           </div>
         </div>
@@ -106,7 +106,7 @@ export const DigitalInvoice: React.FC<DigitalInvoiceProps> = ({ order, onBackToS
           </thead>
           <tbody>
             {order.items.map((item, idx) => (
-              <tr key={idx} style={{ borderBottom: '1px solid #fdf2f8', fontSize: '0.92rem' }}>
+              <tr key={idx} style={{ borderBottom: '1px solid #f4f4f5', fontSize: '0.92rem' }}>
                 <td style={{ padding: '14px 8px' }}>
                   <div style={{ fontWeight: 700 }}>{item.product.name}</div>
                   <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>

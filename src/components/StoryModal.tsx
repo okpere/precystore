@@ -124,14 +124,14 @@ export const StoryModal: React.FC<StoryModalProps> = ({ storyId, onClose }) => {
               </div>
               <div>
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>📸 Client Showcase & Reviews</h2>
-                <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>3,120+ happy clients across Lagos & Nigeria</p>
+                <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>3,120+ happy clients across Abuja & Nigeria</p>
               </div>
             </div>
 
             <div style={{ background: '#fafafa', padding: '14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.86rem', lineHeight: 1.5 }}>
-              <p>⭐️⭐️⭐️⭐️⭐️ <em>"The chrome almond press-ons lasted over 2 weeks during my vacation! Nobody believed they weren't salon acrylics!"</em> — <strong>Chioma A., Lagos</strong></p>
+              <p>⭐️⭐️⭐️⭐️⭐️ <em>"The chrome almond press-ons lasted over 2 weeks during my vacation! Nobody believed they weren't salon acrylics!"</em> — <strong>Chioma A., Abuja</strong></p>
               <hr style={{ margin: '10px 0', border: 'none', borderTop: '1px solid var(--border-color)' }} />
-              <p>⭐️⭐️⭐️⭐️⭐️ <em>"Fast same-day delivery in Ikeja and the sizing kit was spot on!"</em> — <strong>Tolu O., Ikeja</strong></p>
+              <p>⭐️⭐️⭐️⭐️⭐️ <em>"Fast same-day delivery in Gwarinpa and the sizing kit was spot on!"</em> — <strong>Tolu O., Lokogoma</strong></p>
             </div>
 
             <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '12px', borderRadius: 'var(--radius-sm)', fontSize: '0.84rem', color: '#166534' }}>
@@ -161,7 +161,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ storyId, onClose }) => {
                 <strong>2. WhatsApp Checkout:</strong> Send your cart directly to our official WhatsApp line for custom assistance & fast confirmation.
               </div>
               <div style={{ background: '#fafafa', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-                <strong>3. Doorstep Delivery:</strong> Same-day dispatch within Lagos & 24-48h nationwide shipping.
+                <strong>3. Doorstep Delivery:</strong> Same-day dispatch within Abuja (Gwarinpa / Lokogoma) & 24-48h nationwide shipping.
               </div>
             </div>
           </div>

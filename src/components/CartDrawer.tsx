@@ -140,12 +140,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: '#fdf2f8'
+            background: '#fafafa'
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--primary)' }}>Your Press-On Cart</h3>
-            <span className="badge badge-purple">{cartItems.length} items</span>
+            <span className="badge badge-gold">{cartItems.length} items</span>
           </div>
           <button
             onClick={onClose}
@@ -203,7 +203,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       <Trash2 size={16} />
                     </button>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fdf2f8', borderRadius: 'var(--radius-sm)', padding: '2px 6px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#f4f4f5', borderRadius: 'var(--radius-sm)', padding: '2px 6px' }}>
                       <button
                         onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
                         style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}
@@ -223,7 +223,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               ))}
 
               {/* Coupon Engine */}
-              <div style={{ background: '#fdf2f8', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginTop: '8px' }}>
+              <div style={{ background: '#fafafa', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginTop: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: 700, marginBottom: '8px' }}>
                   <Tag size={16} color="var(--primary)" /> Have a Nail Promo Code?
                 </div>
@@ -346,7 +346,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
         {/* Drawer Footer with Calculation */}
         {cartItems.length > 0 && (
-          <div style={{ padding: '18px 20px', borderTop: '1px solid var(--border-color)', background: '#fdf2f8' }}>
+          <div style={{ padding: '18px 20px', borderTop: '1px solid var(--border-color)', background: '#fafafa' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.88rem', marginBottom: '14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
                 <span>Nails Subtotal:</span>

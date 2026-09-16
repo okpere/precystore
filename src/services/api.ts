@@ -12,6 +12,15 @@ export const api = {
     return res.json();
   },
 
+  async register(email: string, password: string, shopName?: string, handle?: string) {
+    const res = await fetch(`${API_BASE_URL}/auth/admin/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, shopName, handle })
+    });
+    return res.json();
+  },
+
   async logout() {
     const res = await fetch(`${API_BASE_URL}/auth/admin/logout`, { method: 'POST' });
     return res.json();

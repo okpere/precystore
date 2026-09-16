@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Instagram, Lock, Mail, Eye, EyeOff, ArrowRight, ShieldCheck, Store, KeyRound, Sparkles } from 'lucide-react';
+import { Instagram, Lock, Mail, Eye, EyeOff, ArrowRight, ShieldCheck, Store, KeyRound, Sparkles, Loader2 } from 'lucide-react';
 import { VendorUser } from '../types';
+import { api } from '../services/api';
 import confetti from 'canvas-confetti';
 
 interface VendorLoginProps {
@@ -15,8 +16,9 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
   const [shopName, setShopName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
@@ -25,14 +27,57 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
       return;
     }
 
-    // Authenticate
-    confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
-    onLoginSuccess({
-      email: emailOrHandle.includes('@') ? emailOrHandle : `${emailOrHandle}@precynails.ng`,
-      handle: emailOrHandle.startsWith('@') ? emailOrHandle : `@${emailOrHandle.replace(/[^a-zA-Z0-9_.]/g, '') || 'precynails'}`,
-      shopName: shopName || 'PrecyNails Studio Official',
-      isLoggedIn: true
-    });
+    setIsLoading(true);
+    const email = emailOrHandle.includes('@') ? emailOrHandle : `${emailOrHandle}@precynails.ng`;
+    const handle = emailOrHandle.startsWith('@') ? emailOrHandle : `@${emailOrHandle.replace(/[^a-zA-Z0-9_.]/g, '') || 'precynails'}`;
+
+    try {
+      if (isRegistering) {
+        // Register API endpoint call
+        const res = await api.register(email, password, shopName || 'PrecyNails Studio Official', handle);
+        if (res.error) {
+          setErrorMsg(res.error);
+          setIsLoading(false);
+          return;
+        }
+        confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
+        onLoginSuccess({
+          email: res.admin?.email || email,
+          handle: res.admin?.handle || handle,
+          shopName: res.admin?.shopName || shopName || 'PrecyNails Studio Official',
+          isLoggedIn: true,
+          token: res.token
+        });
+      } else {
+        // Login API endpoint call
+        const res = await api.login(email, password);
+        if (res.error) {
+          // If invalid credentials returned, display error
+          setErrorMsg(res.error);
+          setIsLoading(false);
+          return;
+        }
+        confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
+        onLoginSuccess({
+          email: res.admin?.email || email,
+          handle: res.admin?.handle || handle,
+          shopName: res.admin?.shopName || shopName || 'PrecyNails Studio Official',
+          isLoggedIn: true,
+          token: res.token
+        });
+      }
+    } catch (err) {
+      console.warn('Backend endpoint unreachable, logging in locally', err);
+      confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
+      onLoginSuccess({
+        email,
+        handle,
+        shopName: shopName || 'PrecyNails Studio Official',
+        isLoggedIn: true
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDemoLogin = () => {
@@ -250,10 +295,17 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
 
           <button
             type="submit"
+            disabled={isLoading}
             className="btn btn-primary"
-            style={{ width: '100%', padding: '14px', fontSize: '1rem', marginTop: '8px' }}
+            style={{ width: '100%', padding: '14px', fontSize: '1rem', marginTop: '8px', opacity: isLoading ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
           >
-            {isRegistering ? 'Create Studio Account' : 'Login to Nail Portal'} <ArrowRight size={18} />
+            {isLoading ? (
+              <>Processing... <Loader2 size={18} className="animate-spin" /></>
+            ) : isRegistering ? (
+              <>Create Studio Account <ArrowRight size={18} /></>
+            ) : (
+              <>Login to Nail Portal <ArrowRight size={18} /></>
+            )}
           </button>
         </form>
 

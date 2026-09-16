@@ -78,17 +78,16 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
   };
 
   // Expenses State
-  const [expenses, setExpenses] = useState<{ id: string; title: string; amount: number; date: string }[]>([
-    { id: '1', title: 'IG Ad Campaign - Pearl Ombre Nails', amount: 15000, date: 'Today' },
-    { id: '2', title: 'Custom Branded Nail Packaging Boxes & Glue', amount: 24000, date: 'Yesterday' }
-  ]);
+  const [expenses, setExpenses] = useState<{ id: string; title: string; amount: number; date: string }[]>([]);
   const [expTitle, setExpTitle] = useState('');
   const [expAmount, setExpAmount] = useState('');
 
-  // Revenue & Analytics metrics
-  const totalRevenue = orders.reduce((acc, o) => acc + o.total, 0) + 145000;
+  // Revenue & Analytics metrics (computed exclusively from real Supabase DB data)
+  const totalRevenue = orders.reduce((acc, o) => acc + o.total, 0);
   const totalExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
   const netProfit = totalRevenue - totalExpenses;
+  const avgOrderValue = orders.length > 0 ? Math.round(totalRevenue / orders.length) : 0;
+  const profitMarginPercent = totalRevenue > 0 ? Math.round((netProfit / totalRevenue) * 100) : 0;
 
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -217,15 +216,15 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
               <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--primary)', margin: '8px 0' }}>
                 ₦{totalRevenue.toLocaleString()}
               </div>
-              <div style={{ fontSize: '0.78rem', color: '#db2777', fontWeight: 700 }}>↑ +32% from last month</div>
+              <div style={{ fontSize: '0.78rem', color: '#db2777', fontWeight: 700 }}>Real-time database records</div>
             </div>
 
             <div className="card" style={{ padding: '20px', borderLeft: '4px solid #9333ea' }}>
               <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 600 }}>Completed Nail Orders</div>
               <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#9333ea', margin: '8px 0' }}>
-                {orders.length + 18} orders
+                {orders.length} orders
               </div>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Avg order value: ₦19,500</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Avg order value: ₦{avgOrderValue.toLocaleString()}</div>
             </div>
 
             <div className="card" style={{ padding: '20px', borderLeft: '4px solid #e11d48' }}>
@@ -241,7 +240,7 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
               <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#b45309', margin: '8px 0' }}>
                 ₦{netProfit.toLocaleString()}
               </div>
-              <div style={{ fontSize: '0.78rem', color: '#b45309', fontWeight: 700 }}>Margin: {Math.round((netProfit / totalRevenue) * 100)}%</div>
+              <div style={{ fontSize: '0.78rem', color: '#b45309', fontWeight: 700 }}>Margin: {profitMarginPercent}%</div>
             </div>
           </div>
 
@@ -283,17 +282,23 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
             <div className="card" style={{ padding: '24px' }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '16px' }}>Expense History Log</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {expenses.map((exp) => (
-                  <div key={exp.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#f4f4f5', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: '0.92rem' }}>{exp.title}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{exp.date}</div>
-                    </div>
-                    <div style={{ fontWeight: 800, color: '#e11d48', fontSize: '0.95rem' }}>
-                      -₦{exp.amount.toLocaleString()}
-                    </div>
+                {expenses.length === 0 ? (
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.88rem', fontStyle: 'italic', padding: '12px 0' }}>
+                    No studio expense entries recorded yet.
                   </div>
-                ))}
+                ) : (
+                  expenses.map((exp) => (
+                    <div key={exp.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#f4f4f5', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.92rem' }}>{exp.title}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{exp.date}</div>
+                      </div>
+                      <div style={{ fontWeight: 800, color: '#e11d48', fontSize: '0.95rem' }}>
+                        -₦{exp.amount.toLocaleString()}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>

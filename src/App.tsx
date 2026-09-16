@@ -217,8 +217,13 @@ export function App() {
     );
   };
 
-  const handleOrderComplete = (order: Order) => {
-    setOrders([order, ...orders]);
+  const handleOrderComplete = async (order: Order) => {
+    try {
+      await api.createOrder(order);
+    } catch (err) {
+      console.error('Failed creating order in Supabase:', err);
+    }
+    setOrders((prev) => [order, ...prev]);
     setCartItems([]);
     setIsCartOpen(false);
     setActiveInvoiceOrder(order);

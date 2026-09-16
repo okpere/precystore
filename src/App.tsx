@@ -8,10 +8,6 @@ import { DigitalInvoice } from './components/DigitalInvoice';
 import { VendorAdmin } from './components/VendorAdmin';
 import { VendorLogin } from './components/VendorLogin';
 import {
-  getStoredProducts,
-  saveStoredProducts,
-  getStoredOrders,
-  saveStoredOrders,
   getStoredVendorSession,
   saveStoredVendorSession,
   clearVendorSession
@@ -21,7 +17,7 @@ import { Lock } from 'lucide-react';
 
 export function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('storefront');
-  const [products, setProducts] = useState<Product[]>(getStoredProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -30,35 +26,51 @@ export function App() {
   // Vendor Auth State - Persisted session
   const [vendorUser, setVendorUser] = useState<VendorUser>(getStoredVendorSession);
 
-  // Orders & active invoice - Persisted orders
-  const [orders, setOrders] = useState<Order[]>(getStoredOrders);
+  // Orders & active invoice
+  const [orders, setOrders] = useState<Order[]>([]);
   const [activeInvoiceOrder, setActiveInvoiceOrder] = useState<Order | null>(null);
 
-  // Load products from Backend API on mount
+  // Clear any old local storage product/order caches on startup
+  useEffect(() => {
+    try {
+      localStorage.removeItem('precynails_products_v1');
+      localStorage.removeItem('precynails_orders_v1');
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  // Load products directly from Backend API / Supabase database on mount
   useEffect(() => {
     async function loadApiProducts() {
       try {
         const fetched = await api.getProducts();
-        if (Array.isArray(fetched) && fetched.length > 0) {
+        if (Array.isArray(fetched)) {
           setProducts(fetched);
-          saveStoredProducts(fetched);
         }
       } catch (err) {
-        console.log('Using local products cache', err);
+        console.error('Error fetching products from API:', err);
+        setProducts([]);
       }
     }
     loadApiProducts();
   }, []);
 
-  // Sync products to local storage whenever they change
+  // Load orders directly from Backend API / Supabase database when logged in
   useEffect(() => {
-    saveStoredProducts(products);
-  }, [products]);
-
-  // Sync orders to local storage whenever they change
-  useEffect(() => {
-    saveStoredOrders(orders);
-  }, [orders]);
+    async function loadApiOrders() {
+      if (!vendorUser.isLoggedIn) return;
+      try {
+        const fetched = await api.getOrders(vendorUser.token);
+        if (Array.isArray(fetched)) {
+          setOrders(fetched);
+        }
+      } catch (err) {
+        console.error('Error fetching orders from API:', err);
+      }
+    }
+    loadApiOrders();
+  }, [vendorUser.isLoggedIn, vendorUser.token]);
 
   // Sync vendor session to local storage
   useEffect(() => {

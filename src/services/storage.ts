@@ -1,40 +1,23 @@
 import { Product, Order, VendorUser } from '../types';
 
-const PRODUCTS_KEY = 'precynails_products_v1';
-const ORDERS_KEY = 'precynails_orders_v1';
 const VENDOR_KEY = 'precynails_vendor_v1';
 
-export const getStoredProducts = (): Product[] => {
+// Deprecated local storage methods - return empty arrays to force pulling strictly from API / Supabase
+export const getStoredProducts = (): Product[] => [];
+export const saveStoredProducts = (_products: Product[]) => {
   try {
-    const data = localStorage.getItem(PRODUCTS_KEY);
-    return data ? JSON.parse(data) : [];
+    localStorage.removeItem('precynails_products_v1');
   } catch (e) {
-    return [];
+    // ignore
   }
 };
 
-export const saveStoredProducts = (products: Product[]) => {
+export const getStoredOrders = (): Order[] => [];
+export const saveStoredOrders = (_orders: Order[]) => {
   try {
-    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+    localStorage.removeItem('precynails_orders_v1');
   } catch (e) {
-    console.error('Failed saving products to local storage', e);
-  }
-};
-
-export const getStoredOrders = (): Order[] => {
-  try {
-    const data = localStorage.getItem(ORDERS_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch (e) {
-    return [];
-  }
-};
-
-export const saveStoredOrders = (orders: Order[]) => {
-  try {
-    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
-  } catch (e) {
-    console.error('Failed saving orders to local storage', e);
+    // ignore
   }
 };
 

@@ -34,6 +34,22 @@ export function App() {
   const [orders, setOrders] = useState<Order[]>(getStoredOrders);
   const [activeInvoiceOrder, setActiveInvoiceOrder] = useState<Order | null>(null);
 
+  // Load products from Backend API on mount
+  useEffect(() => {
+    async function loadApiProducts() {
+      try {
+        const fetched = await api.getProducts();
+        if (Array.isArray(fetched) && fetched.length > 0) {
+          setProducts(fetched);
+          saveStoredProducts(fetched);
+        }
+      } catch (err) {
+        console.log('Using local products cache', err);
+      }
+    }
+    loadApiProducts();
+  }, []);
+
   // Sync products to local storage whenever they change
   useEffect(() => {
     saveStoredProducts(products);
@@ -100,8 +116,13 @@ export function App() {
   };
 
   // Vendor Admin Operations
-  const handleAddProduct = (newProduct: Product) => {
-    setProducts([newProduct, ...products]);
+  const handleAddProduct = async (newProduct: Product) => {
+    setProducts((prev) => [newProduct, ...prev]);
+    try {
+      await api.createProduct(newProduct, vendorUser.token || 'demo-token');
+    } catch (err) {
+      console.error('Failed API product creation', err);
+    }
   };
 
   const handleUpdateStock = (productId: string, newStock: number) => {

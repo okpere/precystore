@@ -45,4 +45,5 @@ export interface VendorUser {
   handle: string;
   shopName: string;
   isLoggedIn: boolean;
+  token?: string;
 }

@@ -65,11 +65,18 @@ export function App() {
     saveStoredVendorSession(vendorUser);
   }, [vendorUser]);
 
-  // Hash-based routing for dedicated /vendor path
+  // Route handling for dedicated /adminvendor path
   useEffect(() => {
-    const handleHashChange = () => {
+    const handleRouteChange = () => {
       const hash = window.location.hash.toLowerCase();
-      if (hash === '#vendor' || hash === '#admin' || window.location.pathname.startsWith('/vendor')) {
+      const path = window.location.pathname.toLowerCase();
+      if (
+        hash === '#adminvendor' ||
+        hash === '#vendor' ||
+        hash === '#admin' ||
+        path.startsWith('/adminvendor') ||
+        path.startsWith('/vendor')
+      ) {
         if (vendorUser.isLoggedIn) {
           setViewMode('admin');
         } else {
@@ -78,9 +85,13 @@ export function App() {
       }
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    handleHashChange();
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('hashchange', handleRouteChange);
+    window.addEventListener('popstate', handleRouteChange);
+    handleRouteChange();
+    return () => {
+      window.removeEventListener('hashchange', handleRouteChange);
+      window.removeEventListener('popstate', handleRouteChange);
+    };
   }, [vendorUser.isLoggedIn]);
 
   // Cart operations
@@ -152,7 +163,7 @@ export function App() {
 
   const handleLoginSuccess = (user: VendorUser) => {
     setVendorUser(user);
-    window.location.hash = 'vendor';
+    window.location.hash = 'adminvendor';
     setViewMode('admin');
   };
 
@@ -165,7 +176,7 @@ export function App() {
 
   const handleViewChange = (view: ViewMode) => {
     if (view === 'admin' && !vendorUser.isLoggedIn) {
-      window.location.hash = 'vendor';
+      window.location.hash = 'adminvendor';
       setViewMode('login');
     } else {
       if (view === 'storefront') window.location.hash = '';
@@ -232,24 +243,23 @@ export function App() {
         )}
       </main>
 
-      {/* Footer with Discreet Vendor Portal Link */}
-      <footer style={{ background: '#fdf2f8', borderTop: '1px solid var(--border-color)', padding: '24px 20px', textAlign: 'center', fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: 'auto' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+      {/* Footer with Centered Copyright and Discreet Admin Portal Link */}
+      <footer style={{ background: '#fafafa', borderTop: '1px solid var(--border-color)', padding: '24px 20px', textAlign: 'center', fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: 'auto' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', textAlign: 'center' }}>
           <div>
             © PrecyNails Studio • Handcrafted Press-On Nails • Lagos, Nigeria
           </div>
 
           <div>
             <a
-              href="#vendor"
+              href="/adminvendor"
               onClick={(e) => {
                 e.preventDefault();
-                window.location.hash = 'vendor';
+                window.location.hash = 'adminvendor';
                 handleViewChange('admin');
               }}
-              style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+              style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '0.78rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', opacity: 0.85 }}
             >
-              <Lock size={13} /> {vendorUser.isLoggedIn ? `Vendor Portal (${vendorUser.handle})` : 'Vendor / Owner Access'}
             </a>
           </div>
         </div>

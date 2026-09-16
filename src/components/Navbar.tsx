@@ -34,15 +34,15 @@ export const Navbar: React.FC<NavbarProps> = ({
     <>
       <header style={{ position: 'sticky', top: 0, zIndex: 40 }} className="glass-panel">
         {/* Top Announcement Bar */}
-        <div style={{ background: 'linear-gradient(90deg, #ec4899 0%, #db2777 50%, #831843 100%)', color: 'white', padding: '6px 12px', fontSize: '0.78rem', fontWeight: 600, textAlign: 'center' }}>
-          ✨ Handcrafted Reusable Press-On Nails | 🚚 Same Day Lagos Dispatch & Nationwide Delivery!
+        <div style={{ background: '#18181b', color: '#fefce8', padding: '6px 12px', fontSize: '0.78rem', fontWeight: 600, textAlign: 'center', borderBottom: '1px solid #ca9e44' }}>
+          ✨ Handcrafted Reusable Press-On Nails | 🚚 Same Day Abuja Dispatch & Nationwide Delivery!
         </div>
 
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
           {/* Brand Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => handleMobileNavClick('storefront')}>
             <div className="story-ring" style={{ width: '38px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2px' }}>
-              <div style={{ background: '#db2777', borderRadius: '50%', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+              <div style={{ background: '#18181b', borderRadius: '50%', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d4af37' }}>
                 <Sparkles size={18} />
               </div>
             </div>

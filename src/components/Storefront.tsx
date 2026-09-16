@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
 import { STORY_HIGHLIGHTS } from '../data/mockData';
+import { StoryModal } from './StoryModal';
 import { CheckCircle2, ShoppingBag, Eye, Star, Search, Sparkles, MessageSquare, Heart } from 'lucide-react';
 
 interface StorefrontProps {
@@ -19,6 +20,7 @@ export const Storefront: React.FC<StorefrontProps> = ({
   onSearchChange,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
 
   const categories = ['All', 'Press-On Sets', 'Nail Art', 'Care Kits', 'Sizing Kits', 'Bundles'];
 
@@ -32,21 +34,22 @@ export const Storefront: React.FC<StorefrontProps> = ({
 
   return (
     <div style={{ paddingBottom: '60px' }}>
-      {/* IG Vendor Hero Banner - Rose Gold & Velvet Magenta Gradient */}
+      {/* IG Vendor Hero Banner - Minimalist Charcoal & Soft Champagne Gold Banner */}
       <div
         style={{
-          background: 'linear-gradient(135deg, #831843 0%, #db2777 50%, #ec4899 100%)',
+          background: 'linear-gradient(135deg, #18181b 0%, #27272a 100%)',
           color: 'white',
           padding: '28px 16px',
           borderRadius: '0 0 var(--radius-lg) var(--radius-lg)',
           marginBottom: '20px',
-          boxShadow: '0 12px 32px rgba(219, 39, 119, 0.3)',
+          borderBottom: '2px solid #ca9e44',
+          boxShadow: '0 10px 28px rgba(0, 0, 0, 0.25)',
           position: 'relative',
           overflow: 'hidden'
         }}
       >
         {/* Glow Sparkle Background Overlay */}
-        <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '220px', height: '220px', background: 'radial-gradient(circle, rgba(236,72,153,0.3) 0%, rgba(0,0,0,0) 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '220px', height: '220px', background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(0,0,0,0) 70%)', pointerEvents: 'none' }} />
 
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', zIndex: 1 }}>
           
@@ -64,17 +67,17 @@ export const Storefront: React.FC<StorefrontProps> = ({
               <div style={{ flex: 1, minWidth: 0 }}>
                 {/* Username & Verified Tag */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                  <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'white', letterSpacing: '-0.02em', lineHeight: 1.2 }} className="hero-title">
+                  <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f7e7a7', letterSpacing: '-0.02em', lineHeight: 1.2 }} className="hero-title">
                     @precynails.ng
                   </h1>
-                  <CheckCircle2 size={18} color="#ec4899" fill="#ec4899" style={{ color: 'white', flexShrink: 0 }} />
-                  <span className="badge" style={{ fontSize: '0.65rem', padding: '2px 8px', background: '#fbcfe8', color: '#831843', flexShrink: 0 }}>
+                  <CheckCircle2 size={18} color="#d4af37" fill="#d4af37" style={{ color: '#18181b', flexShrink: 0 }} />
+                  <span className="badge" style={{ fontSize: '0.65rem', padding: '2px 8px', background: 'linear-gradient(135deg, #f7e7a7 0%, #ca9e44 100%)', color: '#18181b', flexShrink: 0 }}>
                     ✨ VERIFIED NAIL STUDIO
                   </span>
                 </div>
 
                 {/* Tagline / Bio */}
-                <p style={{ color: '#fbcfe8', fontSize: '0.84rem', marginTop: '6px', lineHeight: 1.4 }}>
+                <p style={{ color: '#fefce8', fontSize: '0.84rem', marginTop: '6px', lineHeight: 1.4 }}>
                   Handcrafted Reusable Press-On Nails & Gel Nail Art | 📍 Ikeja, Lagos | 🚚 Same Day Delivery
                 </p>
 
@@ -131,7 +134,11 @@ export const Storefront: React.FC<StorefrontProps> = ({
           {/* Instagram Story Highlights */}
           <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
             {STORY_HIGHLIGHTS.map((story) => (
-              <div key={story.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', cursor: 'pointer', flexShrink: 0 }}>
+              <div
+                key={story.id}
+                onClick={() => setActiveStoryId(story.id)}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', cursor: 'pointer', flexShrink: 0 }}
+              >
                 <div className="story-ring">
                   <img
                     src={story.image}
@@ -140,12 +147,15 @@ export const Storefront: React.FC<StorefrontProps> = ({
                     style={{ width: '58px', height: '58px', objectFit: 'cover' }}
                   />
                 </div>
-                <span style={{ fontSize: '0.74rem', color: '#fdf2f8', fontWeight: 600 }}>{story.name}</span>
+                <span style={{ fontSize: '0.74rem', color: '#fefce8', fontWeight: 600 }}>{story.name}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
+
+      {/* Story Highlight Modal */}
+      <StoryModal storyId={activeStoryId} onClose={() => setActiveStoryId(null)} />
 
       {/* Main Catalog Container */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px' }}>
@@ -172,14 +182,65 @@ export const Storefront: React.FC<StorefrontProps> = ({
           </div>
         </div>
 
+        {/* Active Filter Status Indicator */}
+        {(selectedCategory !== 'All' || searchQuery) && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', background: '#f4f4f5', padding: '8px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}>
+            <div>
+              Filtering by: <strong style={{ color: 'var(--primary)' }}>{selectedCategory !== 'All' ? selectedCategory : searchQuery}</strong> ({filteredProducts.length} {filteredProducts.length === 1 ? 'item' : 'items'})
+            </div>
+            <button
+              onClick={() => { setSelectedCategory('All'); onSearchChange(''); }}
+              style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem', textDecoration: 'underline' }}
+            >
+              Clear Filter
+            </button>
+          </div>
+        )}
+
         {/* Product Grid */}
         {filteredProducts.length === 0 ? (
-          <div className="card" style={{ padding: '48px 20px', textAlign: 'center', background: '#fffdfa', border: '1px stroke var(--border-color)' }}>
+          <div className="card" style={{ padding: '48px 20px', textAlign: 'center', background: '#ffffff', border: '1px solid var(--border-color)' }}>
             <Sparkles size={36} color="var(--primary)" style={{ margin: '0 auto 12px auto', display: 'block', opacity: 0.8 }} />
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '6px' }}>No press-on nail sets in shop yet</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto' }}>
-              The catalog is ready! Log in to the <a href="#vendor" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'underline' }}>Vendor Portal (#vendor)</a> to add your handcrafted press-on sets.
-            </p>
+            {products.length === 0 ? (
+              <>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '6px' }}>
+                  No press-on nail sets in shop yet
+                </h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto' }}>
+                  The catalog is ready! Log in to the{' '}
+                  <a
+                    href="/adminvendor"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.hash = 'adminvendor';
+                    }}
+                    style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'underline' }}
+                  >
+                    Admin Portal (/adminvendor)
+                  </a>{' '}
+                  to add your handcrafted press-on sets.
+                </p>
+              </>
+            ) : (
+              <>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '6px' }}>
+                  No products found in "{selectedCategory !== 'All' ? selectedCategory : searchQuery}"
+                </h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto 16px auto' }}>
+                  There are currently no items added under the <strong>{selectedCategory}</strong> category.
+                </p>
+                <button
+                  className="btn btn-secondary"
+                  style={{ fontSize: '0.85rem' }}
+                  onClick={() => {
+                    setSelectedCategory('All');
+                    onSearchChange('');
+                  }}
+                >
+                  Show All Products
+                </button>
+              </>
+            )}
           </div>
         ) : (
           <div

@@ -1,5 +1,5 @@
 // PrecyNails Backend API Client
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'https://precystorebackend.onrender.com/api';
 
 export const api = {
   // Auth

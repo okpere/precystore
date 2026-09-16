@@ -258,13 +258,58 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
                     <option value="Sizing Kits">Sizing Kits</option>
                     <option value="Bundles">Bundles</option>
                   </select>
-                  <input
-                    type="text"
-                    placeholder="Image URL (Unsplash press-on image link)"
-                    value={newProdImage}
-                    onChange={(e) => setNewProdImage(e.target.value)}
-                    style={{ padding: '10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}
-                  />
+                  {/* Direct Image File Upload & URL Input */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>
+                      📷 Select Product Image (Upload File or Paste Link):
+                    </label>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setNewProdImage(reader.result as string);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      style={{
+                        padding: '8px',
+                        borderRadius: 'var(--radius-sm)',
+                        border: '1px solid var(--border-color)',
+                        background: '#f4f4f5',
+                        fontSize: '0.82rem',
+                        cursor: 'pointer'
+                      }}
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Or Paste Image URL link..."
+                      value={newProdImage}
+                      onChange={(e) => setNewProdImage(e.target.value)}
+                      style={{ padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.84rem' }}
+                    />
+
+                    {/* Image Preview Thumbnail */}
+                    {newProdImage && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', background: '#fafafa', padding: '6px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+                        <img
+                          src={newProdImage}
+                          alt="Preview"
+                          style={{ width: '44px', height: '44px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }}
+                        />
+                        <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 700 }}>
+                          ✓ Image Ready to Send!
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
                   <textarea
                     placeholder="Description..."
                     value={newProdDesc}

@@ -271,7 +271,7 @@ export const Storefront: React.FC<StorefrontProps> = ({
                   }}
                 >
                   {/* Product Badge */}
-                  {product.badge && (
+                  {product.badge && product.badge !== 'SOLD OUT' && (
                     <div
                       style={{
                         position: 'absolute',
@@ -281,41 +281,41 @@ export const Storefront: React.FC<StorefrontProps> = ({
                       }}
                     >
                       <span
-                        className={`badge ${isSoldOut || product.badge === 'SOLD OUT'
+                        className={`badge ${product.badge === 'HOT'
                           ? 'badge-red'
-                          : product.badge === 'HOT'
-                            ? 'badge-red'
-                            : product.badge === 'SALE'
-                              ? 'badge-gold'
-                              : product.badge === 'BESTSELLER'
-                                ? 'badge-purple'
-                                : 'badge-green'
+                          : product.badge === 'SALE'
+                            ? 'badge-gold'
+                            : product.badge === 'BESTSELLER'
+                              ? 'badge-purple'
+                              : 'badge-green'
                           }`}
                         style={{ fontSize: '0.65rem', padding: '2px 6px' }}
                       >
-                        {isSoldOut ? 'SOLD OUT' : product.badge}
+                        {product.badge}
                       </span>
                     </div>
                   )}
 
                   {/* Stock Tag */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '8px',
-                      right: '8px',
-                      zIndex: 10,
-                      background: isSoldOut ? '#e11d48' : 'rgba(15,23,42,0.75)',
-                      color: '#ffffff',
-                      backdropFilter: 'blur(4px)',
-                      padding: '2px 6px',
-                      borderRadius: 'var(--radius-full)',
-                      fontSize: '0.65rem',
-                      fontWeight: 700
-                    }}
-                  >
-                    {isSoldOut ? 'Out of Stock' : `${product.stockCount} left`}
-                  </div>
+                  {!isSoldOut && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        zIndex: 10,
+                        background: 'rgba(15,23,42,0.75)',
+                        color: '#ffffff',
+                        backdropFilter: 'blur(4px)',
+                        padding: '2px 6px',
+                        borderRadius: 'var(--radius-full)',
+                        fontSize: '0.65rem',
+                        fontWeight: 600
+                      }}
+                    >
+                      {product.stockCount} left
+                    </div>
+                  )}
 
                   {/* Product Image Container */}
                   <div
@@ -336,44 +336,9 @@ export const Storefront: React.FC<StorefrontProps> = ({
                         width: '100%',
                         height: '100%',
                         objectFit: 'cover',
-                        transition: 'transform 0.4s ease',
-                        filter: isSoldOut ? 'grayscale(70%) opacity(0.75)' : 'none'
+                        transition: 'transform 0.4s ease'
                       }}
                     />
-
-                    {/* SOLD OUT Overlay Badge on Image */}
-                    {isSoldOut && (
-                      <div
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          background: 'rgba(15, 23, 42, 0.65)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          zIndex: 8,
-                          backdropFilter: 'blur(2px)'
-                        }}
-                      >
-                        <span
-                          style={{
-                            background: '#e11d48',
-                            color: '#ffffff',
-                            fontWeight: 900,
-                            fontSize: '0.85rem',
-                            letterSpacing: '0.12em',
-                            padding: '6px 14px',
-                            borderRadius: 'var(--radius-sm)',
-                            textTransform: 'uppercase',
-                            boxShadow: '0 4px 14px rgba(225, 29, 72, 0.6)',
-                            border: '1px solid rgba(255, 255, 255, 0.4)',
-                            transform: 'rotate(-4deg)'
-                          }}
-                        >
-                          SOLD OUT
-                        </span>
-                      </div>
-                    )}
                   </div>
 
                   {/* Content */}

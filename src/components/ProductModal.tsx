@@ -84,49 +84,16 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
           {/* Images Gallery */}
           <div style={{ padding: '24px', background: '#fafafa', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ height: '360px', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: '#f4f4f5', position: 'relative' }}>
+            <div style={{ height: '360px', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: '#f4f4f5' }}>
               <img
                 src={activeImage}
                 alt={product.name}
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover',
-                  filter: isSoldOut ? 'grayscale(70%) opacity(0.75)' : 'none'
+                  objectFit: 'cover'
                 }}
               />
-              {isSoldOut && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'rgba(15, 23, 42, 0.65)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 8,
-                    backdropFilter: 'blur(2px)'
-                  }}
-                >
-                  <span
-                    style={{
-                      background: '#e11d48',
-                      color: '#ffffff',
-                      fontWeight: 900,
-                      fontSize: '1rem',
-                      letterSpacing: '0.14em',
-                      padding: '8px 20px',
-                      borderRadius: 'var(--radius-sm)',
-                      textTransform: 'uppercase',
-                      boxShadow: '0 4px 16px rgba(225, 29, 72, 0.6)',
-                      border: '1px solid rgba(255, 255, 255, 0.4)',
-                      transform: 'rotate(-4deg)'
-                    }}
-                  >
-                    SOLD OUT
-                  </span>
-                </div>
-              )}
             </div>
 
             {product.images.length > 1 && (

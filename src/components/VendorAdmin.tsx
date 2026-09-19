@@ -771,17 +771,9 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
                                 width: '48px',
                                 height: '48px',
                                 borderRadius: 'var(--radius-sm)',
-                                objectFit: 'cover',
-                                filter: isSoldOut ? 'grayscale(70%) opacity(0.75)' : 'none'
+                                objectFit: 'cover'
                               }}
                             />
-                            {isSoldOut && (
-                              <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,23,42,0.65)', borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <span style={{ color: 'white', background: '#e11d48', fontSize: '0.48rem', fontWeight: 900, padding: '1px 3px', textTransform: 'uppercase', borderRadius: '2px' }}>
-                                  SOLD OUT
-                                </span>
-                              </div>
-                            )}
                           </div>
                           <div>
                             <div style={{ fontWeight: 700 }}>{prod.name}</div>

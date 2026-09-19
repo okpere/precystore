@@ -28,7 +28,7 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
     }
 
     setIsLoading(true);
-    const email = emailOrHandle.includes('@') ? emailOrHandle : `${emailOrHandle}@Clawed.by.Finbarz`;
+    const email = emailOrHandle.includes('@') ? emailOrHandle : 'finbarzbeautysolutions@gmail.com';
     const handle = emailOrHandle.startsWith('@') ? emailOrHandle : `@${emailOrHandle.replace(/[^a-zA-Z0-9_.]/g, '') || 'Clawed.by.Finbarz'}`;
 
     try {
@@ -83,7 +83,7 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
   const handleDemoLogin = () => {
     confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
     onLoginSuccess({
-      email: 'vendor@Clawed.by.Finbarz',
+      email: 'finbarzbeautysolutions@gmail.com',
       handle: '@Clawed.by.Finbarz',
       shopName: 'Clawed.by.Finbarz Luxury Press-On Studio',
       isLoggedIn: true
@@ -175,7 +175,7 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
               <Sparkles size={20} color="#db2777" />
               <div>
                 <div style={{ fontWeight: 800, fontSize: '0.85rem', color: '#db2777' }}>Demo Vendor Access</div>
-                <div style={{ fontSize: '0.75rem', color: '#be185d' }}>Instant 1-click login as @Clawed.by.Finbarz</div>
+                <div style={{ fontSize: '0.75rem', color: '#be185d' }}>Instant 1-click login as finbarzbeautysolutions@gmail.com</div>
               </div>
             </div>
 
@@ -225,7 +225,7 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
               <Mail size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input
                 type="text"
-                placeholder="e.g. @Clawed.by.Finbarz or vendor@mail.com"
+                placeholder="e.g. finbarzbeautysolutions@gmail.com or @Clawed.by.Finbarz"
                 value={emailOrHandle}
                 onChange={(e) => setEmailOrHandle(e.target.value)}
                 style={{

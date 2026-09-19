@@ -43,14 +43,14 @@ export const DigitalInvoice: React.FC<DigitalInvoiceProps> = ({ order, onBackToS
                 <Sparkles size={20} />
               </div>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)' }}>
-                Precy<span style={{ color: 'var(--primary)' }}>Nails</span>
+                Finbarz <span style={{ color: 'var(--primary)' }}>Beauty Solutions</span>
               </h2>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>
               Official Press-On E-Receipt & Invoice | IG: @Clawed.by.Finbarz
             </p>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Gwarinpa / Lokogoma, Abuja, Nigeria | Support: +234 802 264 2840
+              Gwarinpa / Lokogoma, Abuja, Nigeria | finbarzbeautysolutions@gmail.com | Support: +234 802 264 2840
             </p>
           </div>
 

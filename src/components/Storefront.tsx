@@ -55,14 +55,14 @@ export const Storefront: React.FC<StorefrontProps> = ({
         <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '220px', height: '220px', background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(0,0,0,0) 70%)', pointerEvents: 'none' }} />
 
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', zIndex: 1 }}>
-          
+
           {/* Main Vendor Info Header */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
               <div className="story-ring" style={{ flexShrink: 0 }}>
                 <img
                   src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=300&q=80"
-                  alt="PrecyNails Studio"
+                  alt="ClawsbyFinbars Studio"
                   className="story-avatar hero-avatar"
                 />
               </div>
@@ -71,7 +71,7 @@ export const Storefront: React.FC<StorefrontProps> = ({
                 {/* Username & Verified Tag */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                   <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f7e7a7', letterSpacing: '-0.02em', lineHeight: 1.2 }} className="hero-title">
-                    @precynails.ng
+                    @ClawsbyFinbars.ng
                   </h1>
                   <CheckCircle2 size={18} color="#d4af37" fill="#d4af37" style={{ color: '#18181b', flexShrink: 0 }} />
                   <span className="badge" style={{ fontSize: '0.65rem', padding: '2px 8px', background: 'linear-gradient(135deg, #f7e7a7 0%, #ca9e44 100%)', color: '#18181b', flexShrink: 0 }}>
@@ -95,7 +95,7 @@ export const Storefront: React.FC<StorefrontProps> = ({
 
             {/* WhatsApp CTA Action Button */}
             <a
-              href="https://wa.me/2348022642840?text=Hi%20PrecyNails!%20I%20want%20to%20order%20custom%20press-on%20nails"
+              href="https://wa.me/2348022642840?text=Hi%20ClawsbyFinbars!%20I%20want%20to%20order%20custom%20press-on%20nails"
               target="_blank"
               rel="noreferrer"
               className="btn btn-whatsapp"
@@ -278,15 +278,14 @@ export const Storefront: React.FC<StorefrontProps> = ({
                     }}
                   >
                     <span
-                      className={`badge ${
-                        product.badge === 'HOT'
+                      className={`badge ${product.badge === 'HOT'
                           ? 'badge-red'
                           : product.badge === 'SALE'
-                          ? 'badge-gold'
-                          : product.badge === 'BESTSELLER'
-                          ? 'badge-purple'
-                          : 'badge-green'
-                      }`}
+                            ? 'badge-gold'
+                            : product.badge === 'BESTSELLER'
+                              ? 'badge-purple'
+                              : 'badge-green'
+                        }`}
                       style={{ fontSize: '0.65rem', padding: '2px 6px' }}
                     >
                       {product.badge}

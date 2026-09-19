@@ -1,4 +1,4 @@
-// PrecyNails Single-Seller Backend API Client
+// ClawsbyFinbars Single-Seller Backend API Client
 const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'https://precystorebackend.onrender.com/api';
 
 export const api = {
@@ -61,7 +61,7 @@ export const api = {
       }
       const errorText = await res.text();
       let errorJson;
-      try { errorJson = JSON.parse(errorText); } catch(e) {}
+      try { errorJson = JSON.parse(errorText); } catch (e) { }
       throw new Error(errorJson?.error || errorJson?.message || `Failed to create product (HTTP ${res.status})`);
     }
 

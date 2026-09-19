@@ -47,7 +47,7 @@ export const DigitalInvoice: React.FC<DigitalInvoiceProps> = ({ order, onBackToS
               </h2>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-              Official Press-On E-Receipt & Invoice | IG: @precynails.ng
+              Official Press-On E-Receipt & Invoice | IG: @ClawsbyFinbars.ng
             </p>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
               Gwarinpa / Lokogoma, Abuja, Nigeria | Support: +234 802 264 2840
@@ -156,7 +156,7 @@ export const DigitalInvoice: React.FC<DigitalInvoiceProps> = ({ order, onBackToS
             </div>
             <div>
               <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                Thank you for ordering with PrecyNails!
+                Thank you for ordering with ClawsbyFinbars!
               </div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                 Handcrafted Press-On Studio Commerce Engine

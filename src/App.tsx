@@ -205,10 +205,55 @@ export function App() {
     }
   };
 
-  const handleUpdateStock = (productId: string, newStock: number) => {
+  const handleUpdateProduct = async (productId: string, updatedData: Partial<Product>) => {
+    try {
+      const res = await api.updateProduct(productId, updatedData, vendorUser.token);
+      setProducts((prev) =>
+        prev.map((p) => {
+          if (p.id === productId) {
+            const newStock = updatedData.stockCount !== undefined ? updatedData.stockCount : p.stockCount;
+            const newImage = res?.image || updatedData.image || p.image;
+            return {
+              ...p,
+              ...updatedData,
+              image: newImage,
+              images: [newImage],
+              stockCount: newStock,
+              inStock: newStock > 0,
+              status: newStock <= 0 ? 'out_of_stock' : (updatedData.status || p.status)
+            };
+          }
+          return p;
+        })
+      );
+      return res;
+    } catch (err) {
+      console.error('Failed API product update:', err);
+      // Optimistic update
+      setProducts((prev) =>
+        prev.map((p) => (p.id === productId ? { ...p, ...updatedData } : p))
+      );
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    try {
+      await api.deleteProduct(productId, vendorUser.token);
+    } catch (err) {
+      console.error('Failed API product delete:', err);
+    }
+    setProducts((prev) => prev.filter((p) => p.id !== productId));
+  };
+
+  const handleUpdateStock = async (productId: string, newStock: number) => {
     setProducts((prev) =>
       prev.map((p) => (p.id === productId ? { ...p, stockCount: newStock, inStock: newStock > 0 } : p))
     );
+    try {
+      await api.updateProduct(productId, { stockCount: newStock }, vendorUser.token);
+    } catch (err) {
+      console.error('Failed updating stock in API:', err);
+    }
   };
 
   const handleUpdateOrderStatus = (orderId: string, status: Order['status']) => {
@@ -292,6 +337,8 @@ export function App() {
               orders={orders}
               isLoading={isLoadingProducts}
               onAddProduct={handleAddProduct}
+              onUpdateProduct={handleUpdateProduct}
+              onDeleteProduct={handleDeleteProduct}
               onUpdateStock={handleUpdateStock}
               onUpdateOrderStatus={handleUpdateOrderStatus}
               onViewInvoice={handleViewInvoice}

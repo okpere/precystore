@@ -7,6 +7,8 @@ interface VendorAdminProps {
   orders: Order[];
   isLoading?: boolean;
   onAddProduct: (product: Product) => Promise<any> | void;
+  onUpdateProduct?: (productId: string, updatedData: Partial<Product>) => Promise<any> | void;
+  onDeleteProduct?: (productId: string) => Promise<any> | void;
   onUpdateStock: (productId: string, newStock: number) => void;
   onUpdateOrderStatus: (orderId: string, status: Order['status']) => void;
   onViewInvoice: (order: Order) => void;
@@ -53,6 +55,8 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
   orders,
   isLoading = false,
   onAddProduct,
+  onUpdateProduct,
+  onDeleteProduct,
   onUpdateStock,
   onUpdateOrderStatus,
   onViewInvoice,
@@ -68,6 +72,17 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
   const [newProdStock, setNewProdStock] = useState('15');
   const [newProdDesc, setNewProdDesc] = useState('');
   const [isSavingProduct, setIsSavingProduct] = useState(false);
+
+  // Edit Product State
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editProdName, setEditProdName] = useState('');
+  const [editProdPrice, setEditProdPrice] = useState('');
+  const [editProdCategory, setEditProdCategory] = useState<Product['category']>('Press-On Sets');
+  const [editProdImage, setEditProdImage] = useState('');
+  const [editProdStock, setEditProdStock] = useState('15');
+  const [editProdDesc, setEditProdDesc] = useState('');
+  const [editProdBadge, setEditProdBadge] = useState<string>('NEW');
+  const [isUpdatingProduct, setIsUpdatingProduct] = useState(false);
 
   // Toast Notification State
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -107,9 +122,9 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
       image: newProdImage || 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80',
       images: [newProdImage || 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80'],
       description: newProdDesc || 'Handcrafted luxury reusable press-on gel nail set.',
-      inStock: true,
+      inStock: parseInt(newProdStock) > 0,
       stockCount: parseInt(newProdStock) || 15,
-      badge: 'NEW',
+      badge: parseInt(newProdStock) <= 0 ? 'SOLD OUT' : 'NEW',
       shapes: ['Short Almond', 'Medium Coffin', 'Long Stiletto'],
       sizes: ['XS (3,6,5,7,9)', 'S (2,5,4,6,9)', 'M (1,4,3,5,8)', 'L (0,3,2,4,7)']
     };
@@ -126,6 +141,68 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
       showToast('error', `❌ ${err?.message || 'Failed to save product to database'}`);
     } finally {
       setIsSavingProduct(false);
+    }
+  };
+
+  const handleOpenEditModal = (prod: Product) => {
+    setEditingProduct(prod);
+    setEditProdName(prod.name);
+    setEditProdPrice(prod.price.toString());
+    setEditProdCategory(prod.category);
+    setEditProdImage(prod.image);
+    setEditProdStock(prod.stockCount.toString());
+    setEditProdDesc(prod.description || '');
+    setEditProdBadge(prod.badge || 'NEW');
+  };
+
+  const handleSaveProductEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProduct) return;
+    if (!editProdName || !editProdPrice) {
+      showToast('error', 'Please enter a product name and price.');
+      return;
+    }
+
+    setIsUpdatingProduct(true);
+    const stockVal = parseInt(editProdStock) || 0;
+    const isSoldOut = stockVal <= 0 || editProdBadge === 'SOLD OUT';
+    
+    const updatedData: Partial<Product> = {
+      name: editProdName,
+      price: parseFloat(editProdPrice),
+      category: editProdCategory,
+      image: editProdImage || editingProduct.image,
+      images: editProdImage ? [editProdImage] : editingProduct.images,
+      description: editProdDesc,
+      stockCount: stockVal,
+      inStock: !isSoldOut,
+      badge: isSoldOut ? 'SOLD OUT' : editProdBadge,
+      status: isSoldOut ? 'out_of_stock' : 'active'
+    };
+
+    try {
+      if (onUpdateProduct) {
+        await onUpdateProduct(editingProduct.id, updatedData);
+      }
+      showToast('success', '✓ Product updated successfully in database!');
+      setEditingProduct(null);
+    } catch (err: any) {
+      showToast('error', err.message || 'Failed to update product');
+    } finally {
+      setIsUpdatingProduct(false);
+    }
+  };
+
+  const handleDeleteProductClick = async (prodId: string) => {
+    if (window.confirm('Are you sure you want to delete this press-on nail set?')) {
+      try {
+        if (onDeleteProduct) {
+          await onDeleteProduct(prodId);
+        }
+        showToast('success', '✓ Product deleted from catalog');
+      } catch (err: any) {
+        showToast('error', 'Failed to delete product');
+      }
     }
   };
 
@@ -446,6 +523,196 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
             </div>
           )}
 
+          {/* Edit Product Modal */}
+          {editingProduct && (
+            <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.7)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+              <div className="card animate-fade-in" style={{ width: '100%', maxWidth: '520px', padding: '28px', background: 'white', maxHeight: '90vh', overflowY: 'auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Edit Press-On Nail Set</h3>
+                  <button
+                    onClick={() => setEditingProduct(null)}
+                    style={{ background: '#f4f4f5', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    ✕
+                  </button>
+                </div>
+                <form onSubmit={handleSaveProductEdit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div>
+                    <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>Product Name *</label>
+                    <input
+                      type="text"
+                      placeholder="Nail Set Title *"
+                      value={editProdName}
+                      onChange={(e) => setEditProdName(e.target.value)}
+                      style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', marginTop: '4px' }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>Price (₦) *</label>
+                      <input
+                        type="number"
+                        placeholder="Price (₦) *"
+                        value={editProdPrice}
+                        onChange={(e) => setEditProdPrice(e.target.value)}
+                        style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', marginTop: '4px' }}
+                      />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>Stock Count *</label>
+                      <input
+                        type="number"
+                        placeholder="Stock Count *"
+                        value={editProdStock}
+                        onChange={(e) => setEditProdStock(e.target.value)}
+                        style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', marginTop: '4px' }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>Category</label>
+                      <select
+                        value={editProdCategory}
+                        onChange={(e) => setEditProdCategory(e.target.value as any)}
+                        style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', marginTop: '4px' }}
+                      >
+                        <option value="Press-On Sets">Press-On Sets</option>
+                        <option value="Nail Art">Nail Art</option>
+                        <option value="Care Kits">Care Kits</option>
+                        <option value="Sizing Kits">Sizing Kits</option>
+                        <option value="Bundles">Bundles</option>
+                      </select>
+                    </div>
+
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>Badge / Status Tag</label>
+                      <select
+                        value={editProdBadge}
+                        onChange={(e) => setEditProdBadge(e.target.value)}
+                        style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', marginTop: '4px' }}
+                      >
+                        <option value="NEW">NEW</option>
+                        <option value="HOT">HOT 🔥</option>
+                        <option value="SALE">SALE 🏷️</option>
+                        <option value="BESTSELLER">BESTSELLER ⭐</option>
+                        <option value="SOLD OUT">SOLD OUT 🚫</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Direct Image Upload & URL */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>
+                      📷 Product Image (Upload File or Paste Link):
+                    </label>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          try {
+                            const compressedBase64 = await compressImage(file, 1000, 0.8);
+                            setEditProdImage(compressedBase64);
+                          } catch (err) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setEditProdImage(reader.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }
+                      }}
+                      style={{
+                        padding: '8px',
+                        borderRadius: 'var(--radius-sm)',
+                        border: '1px solid var(--border-color)',
+                        background: '#f4f4f5',
+                        fontSize: '0.82rem',
+                        cursor: 'pointer'
+                      }}
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Or Paste Image URL..."
+                      value={editProdImage}
+                      onChange={(e) => setEditProdImage(e.target.value)}
+                      style={{ padding: '8px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.84rem' }}
+                    />
+
+                    {/* Image Preview */}
+                    {editProdImage && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', background: '#fafafa', padding: '6px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+                        <div style={{ position: 'relative', width: '48px', height: '48px' }}>
+                          <img
+                            src={editProdImage}
+                            alt="Preview"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              borderRadius: 'var(--radius-sm)',
+                              filter: (parseInt(editProdStock) <= 0 || editProdBadge === 'SOLD OUT') ? 'grayscale(70%) opacity(0.75)' : 'none'
+                            }}
+                          />
+                          {(parseInt(editProdStock) <= 0 || editProdBadge === 'SOLD OUT') && (
+                            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.65)', borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <span style={{ color: 'white', background: '#e11d48', fontSize: '0.48rem', fontWeight: 900, padding: '1px 3px' }}>
+                                SOLD OUT
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 700 }}>
+                          ✓ Image Ready to Update!
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>Description</label>
+                    <textarea
+                      placeholder="Description..."
+                      value={editProdDesc}
+                      onChange={(e) => setEditProdDesc(e.target.value)}
+                      style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', height: '70px', marginTop: '4px' }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                    <button
+                      type="button"
+                      disabled={isUpdatingProduct}
+                      className="btn btn-secondary"
+                      style={{ flex: 1 }}
+                      onClick={() => setEditingProduct(null)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isUpdatingProduct}
+                      className="btn btn-primary"
+                      style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', opacity: isUpdatingProduct ? 0.7 : 1 }}
+                    >
+                      {isUpdatingProduct ? (
+                        <>Updating... <Loader2 size={16} className="animate-spin" /></>
+                      ) : (
+                        'Save Changes'
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
           {/* Product Table */}
           <div className="card" style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
@@ -455,7 +722,7 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
                   <th style={{ padding: '12px 16px' }}>Category</th>
                   <th style={{ padding: '12px 16px' }}>Price</th>
                   <th style={{ padding: '12px 16px' }}>Stock Level</th>
-                  <th style={{ padding: '12px 16px' }}>Stock Adjust</th>
+                  <th style={{ padding: '12px 16px' }}>Actions & Adjust</th>
                 </tr>
               </thead>
               <tbody>
@@ -490,44 +757,90 @@ export const VendorAdmin: React.FC<VendorAdminProps> = ({
                     </td>
                   </tr>
                 ) : (
-                  products.map((prod) => (
-                  <tr key={prod.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
-                    <td style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <img src={prod.image} alt={prod.name} style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-sm)', objectFit: 'cover' }} />
-                      <div>
-                        <div style={{ fontWeight: 700 }}>{prod.name}</div>
-                        {prod.badge && <span className="badge badge-purple" style={{ fontSize: '0.65rem' }}>{prod.badge}</span>}
-                      </div>
-                    </td>
-                    <td style={{ padding: '12px 16px' }}>{prod.category}</td>
-                    <td style={{ padding: '12px 16px', fontWeight: 700, color: 'var(--primary)' }}>
-                      ₦{prod.price.toLocaleString()}
-                    </td>
-                    <td style={{ padding: '12px 16px' }}>
-                      <span className={`badge ${prod.stockCount < 5 ? 'badge-red' : 'badge-green'}`}>
-                        {prod.stockCount} sets
-                      </span>
-                    </td>
-                    <td style={{ padding: '12px 16px' }}>
-                      <div style={{ display: 'flex', gap: '6px' }}>
-                        <button
-                          className="btn btn-secondary"
-                          style={{ padding: '4px 10px', fontSize: '0.75rem' }}
-                          onClick={() => onUpdateStock(prod.id, Math.max(0, prod.stockCount - 1))}
-                        >
-                          -1
-                        </button>
-                        <button
-                          className="btn btn-secondary"
-                          style={{ padding: '4px 10px', fontSize: '0.75rem' }}
-                          onClick={() => onUpdateStock(prod.id, prod.stockCount + 5)}
-                        >
-                          +5
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                )))}
+                  products.map((prod) => {
+                    const isSoldOut = prod.stockCount <= 0 || prod.inStock === false || prod.status === 'out_of_stock' || prod.badge === 'SOLD OUT';
+
+                    return (
+                      <tr key={prod.id} style={{ borderBottom: '1px solid #f4f4f5' }}>
+                        <td style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <div style={{ position: 'relative', width: '48px', height: '48px', flexShrink: 0 }}>
+                            <img
+                              src={prod.image}
+                              alt={prod.name}
+                              style={{
+                                width: '48px',
+                                height: '48px',
+                                borderRadius: 'var(--radius-sm)',
+                                objectFit: 'cover',
+                                filter: isSoldOut ? 'grayscale(70%) opacity(0.75)' : 'none'
+                              }}
+                            />
+                            {isSoldOut && (
+                              <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,23,42,0.65)', borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <span style={{ color: 'white', background: '#e11d48', fontSize: '0.48rem', fontWeight: 900, padding: '1px 3px', textTransform: 'uppercase', borderRadius: '2px' }}>
+                                  SOLD OUT
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 700 }}>{prod.name}</div>
+                            {isSoldOut ? (
+                              <span className="badge badge-red" style={{ fontSize: '0.65rem' }}>SOLD OUT</span>
+                            ) : (
+                              prod.badge && <span className="badge badge-purple" style={{ fontSize: '0.65rem' }}>{prod.badge}</span>
+                            )}
+                          </div>
+                        </td>
+                        <td style={{ padding: '12px 16px' }}>{prod.category}</td>
+                        <td style={{ padding: '12px 16px', fontWeight: 700, color: 'var(--primary)' }}>
+                          ₦{prod.price.toLocaleString()}
+                        </td>
+                        <td style={{ padding: '12px 16px' }}>
+                          <span className={`badge ${isSoldOut || prod.stockCount < 5 ? 'badge-red' : 'badge-green'}`}>
+                            {isSoldOut ? 'Out of Stock' : `${prod.stockCount} sets`}
+                          </span>
+                        </td>
+                        <td style={{ padding: '12px 16px' }}>
+                          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                            <button
+                              className="btn btn-secondary"
+                              style={{ padding: '4px 8px', fontSize: '0.75rem' }}
+                              onClick={() => onUpdateStock(prod.id, Math.max(0, prod.stockCount - 1))}
+                              title="Decrease stock by 1"
+                            >
+                              -1
+                            </button>
+                            <button
+                              className="btn btn-secondary"
+                              style={{ padding: '4px 8px', fontSize: '0.75rem' }}
+                              onClick={() => onUpdateStock(prod.id, prod.stockCount + 5)}
+                              title="Increase stock by 5"
+                            >
+                              +5
+                            </button>
+                            <button
+                              className="btn btn-secondary"
+                              style={{ padding: '5px 10px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px', background: '#f4f4f5' }}
+                              onClick={() => handleOpenEditModal(prod)}
+                              title="Edit Name, Price, Category, Image, Stock & Details"
+                            >
+                              <Edit size={13} /> Edit
+                            </button>
+                            <button
+                              className="btn btn-secondary"
+                              style={{ padding: '5px 8px', fontSize: '0.75rem', color: '#e11d48' }}
+                              onClick={() => handleDeleteProductClick(prod.id)}
+                              title="Delete Product"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>

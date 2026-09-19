@@ -9,7 +9,8 @@ export interface Product {
   description: string;
   inStock: boolean;
   stockCount: number;
-  badge?: 'HOT' | 'SALE' | 'NEW' | 'BESTSELLER';
+  status?: string;
+  badge?: 'HOT' | 'SALE' | 'NEW' | 'BESTSELLER' | 'SOLD OUT' | string;
   shapes?: string[];
   sizes?: string[];
 }

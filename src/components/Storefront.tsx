@@ -256,144 +256,192 @@ export const Storefront: React.FC<StorefrontProps> = ({
             }}
             className="product-responsive-grid"
           >
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="card animate-fade-in"
-                style={{
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  position: 'relative'
-                }}
-              >
-                {/* Product Badge */}
-                {product.badge && (
+            {filteredProducts.map((product) => {
+              const isSoldOut = product.stockCount <= 0 || product.inStock === false || product.status === 'out_of_stock' || product.badge === 'SOLD OUT';
+
+              return (
+                <div
+                  key={product.id}
+                  className="card animate-fade-in"
+                  style={{
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    position: 'relative'
+                  }}
+                >
+                  {/* Product Badge */}
+                  {product.badge && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '8px',
+                        left: '8px',
+                        zIndex: 10
+                      }}
+                    >
+                      <span
+                        className={`badge ${isSoldOut || product.badge === 'SOLD OUT'
+                          ? 'badge-red'
+                          : product.badge === 'HOT'
+                            ? 'badge-red'
+                            : product.badge === 'SALE'
+                              ? 'badge-gold'
+                              : product.badge === 'BESTSELLER'
+                                ? 'badge-purple'
+                                : 'badge-green'
+                          }`}
+                        style={{ fontSize: '0.65rem', padding: '2px 6px' }}
+                      >
+                        {isSoldOut ? 'SOLD OUT' : product.badge}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Stock Tag */}
                   <div
                     style={{
                       position: 'absolute',
                       top: '8px',
-                      left: '8px',
-                      zIndex: 10
+                      right: '8px',
+                      zIndex: 10,
+                      background: isSoldOut ? '#e11d48' : 'rgba(15,23,42,0.75)',
+                      color: '#ffffff',
+                      backdropFilter: 'blur(4px)',
+                      padding: '2px 6px',
+                      borderRadius: 'var(--radius-full)',
+                      fontSize: '0.65rem',
+                      fontWeight: 700
                     }}
                   >
-                    <span
-                      className={`badge ${product.badge === 'HOT'
-                        ? 'badge-red'
-                        : product.badge === 'SALE'
-                          ? 'badge-gold'
-                          : product.badge === 'BESTSELLER'
-                            ? 'badge-purple'
-                            : 'badge-green'
-                        }`}
-                      style={{ fontSize: '0.65rem', padding: '2px 6px' }}
-                    >
-                      {product.badge}
-                    </span>
+                    {isSoldOut ? 'Out of Stock' : `${product.stockCount} left`}
                   </div>
-                )}
 
-                {/* Stock Tag */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '8px',
-                    right: '8px',
-                    zIndex: 10,
-                    background: 'rgba(15,23,42,0.75)',
-                    color: '#fbcfe8',
-                    backdropFilter: 'blur(4px)',
-                    padding: '2px 6px',
-                    borderRadius: 'var(--radius-full)',
-                    fontSize: '0.65rem',
-                    fontWeight: 600
-                  }}
-                >
-                  {product.stockCount} left
-                </div>
-
-                {/* Product Image */}
-                <div
-                  style={{
-                    height: '210px',
-                    overflow: 'hidden',
-                    position: 'relative',
-                    cursor: 'pointer',
-                    background: '#f4f4f5'
-                  }}
-                  className="product-img-container"
-                  onClick={() => onSelectProduct(product)}
-                >
-                  <img
-                    src={product.image}
-                    alt={product.name}
+                  {/* Product Image Container */}
+                  <div
                     style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      transition: 'transform 0.4s ease'
+                      height: '210px',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      cursor: 'pointer',
+                      background: '#f4f4f5'
                     }}
-                  />
-                </div>
-
-                {/* Content */}
-                <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
-                  <div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 700 }}>
-                      {product.category}
-                    </div>
-                    <h3
+                    className="product-img-container"
+                    onClick={() => onSelectProduct(product)}
+                  >
+                    <img
+                      src={product.image}
+                      alt={product.name}
                       style={{
-                        fontSize: '0.92rem',
-                        fontWeight: 700,
-                        margin: '3px 0 6px 0',
-                        color: 'var(--text-main)',
-                        cursor: 'pointer',
-                        lineHeight: 1.25,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden'
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.4s ease',
+                        filter: isSoldOut ? 'grayscale(70%) opacity(0.75)' : 'none'
                       }}
-                      onClick={() => onSelectProduct(product)}
-                    >
-                      {product.name}
-                    </h3>
+                    />
 
-                    {/* Price */}
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '8px', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--primary)' }}>
-                        ₦{product.price.toLocaleString()}
-                      </span>
-                      {product.originalPrice && (
-                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
-                          ₦{product.originalPrice.toLocaleString()}
+                    {/* SOLD OUT Overlay Badge on Image */}
+                    {isSoldOut && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: 'rgba(15, 23, 42, 0.65)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          zIndex: 8,
+                          backdropFilter: 'blur(2px)'
+                        }}
+                      >
+                        <span
+                          style={{
+                            background: '#e11d48',
+                            color: '#ffffff',
+                            fontWeight: 900,
+                            fontSize: '0.85rem',
+                            letterSpacing: '0.12em',
+                            padding: '6px 14px',
+                            borderRadius: 'var(--radius-sm)',
+                            textTransform: 'uppercase',
+                            boxShadow: '0 4px 14px rgba(225, 29, 72, 0.6)',
+                            border: '1px solid rgba(255, 255, 255, 0.4)',
+                            transform: 'rotate(-4deg)'
+                          }}
+                        >
+                          SOLD OUT
                         </span>
-                      )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+                    <div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 700 }}>
+                        {product.category}
+                      </div>
+                      <h3
+                        style={{
+                          fontSize: '0.92rem',
+                          fontWeight: 700,
+                          margin: '3px 0 6px 0',
+                          color: 'var(--text-main)',
+                          cursor: 'pointer',
+                          lineHeight: 1.25,
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden'
+                        }}
+                        onClick={() => onSelectProduct(product)}
+                      >
+                        {product.name}
+                      </h3>
+
+                      {/* Price */}
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--primary)' }}>
+                          ₦{product.price.toLocaleString()}
+                        </span>
+                        {product.originalPrice && (
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
+                            ₦{product.originalPrice.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ flex: 1, padding: '6px 4px', fontSize: '0.75rem' }}
+                        onClick={() => onSelectProduct(product)}
+                      >
+                        <Eye size={13} /> View
+                      </button>
+
+                      <button
+                        className="btn btn-primary"
+                        style={{
+                          flex: 1.2,
+                          padding: '6px 4px',
+                          fontSize: '0.75rem',
+                          opacity: isSoldOut ? 0.5 : 1,
+                          cursor: isSoldOut ? 'not-allowed' : 'pointer'
+                        }}
+                        disabled={isSoldOut}
+                        onClick={() => !isSoldOut && onAddToCart(product)}
+                      >
+                        <ShoppingBag size={13} /> {isSoldOut ? 'Sold Out' : 'Add'}
+                      </button>
                     </div>
                   </div>
-
-                  {/* Actions */}
-                  <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ flex: 1, padding: '6px 4px', fontSize: '0.75rem' }}
-                      onClick={() => onSelectProduct(product)}
-                    >
-                      <Eye size={13} /> View
-                    </button>
-
-                    <button
-                      className="btn btn-primary"
-                      style={{ flex: 1.2, padding: '6px 4px', fontSize: '0.75rem' }}
-                      onClick={() => onAddToCart(product)}
-                    >
-                      <ShoppingBag size={13} /> Add
-                    </button>
-                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

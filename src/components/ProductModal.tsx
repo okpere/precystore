@@ -27,6 +27,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     window.open(`https://wa.me/2348022642840?text=${message}`, '_blank');
   };
 
+  const isSoldOut = product.stockCount <= 0 || product.inStock === false || product.status === 'out_of_stock' || product.badge === 'SOLD OUT';
+
   return (
     <div
       style={{
@@ -82,8 +84,49 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
           {/* Images Gallery */}
           <div style={{ padding: '24px', background: '#fafafa', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ height: '360px', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: '#f4f4f5' }}>
-              <img src={activeImage} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div style={{ height: '360px', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: '#f4f4f5', position: 'relative' }}>
+              <img
+                src={activeImage}
+                alt={product.name}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  filter: isSoldOut ? 'grayscale(70%) opacity(0.75)' : 'none'
+                }}
+              />
+              {isSoldOut && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'rgba(15, 23, 42, 0.65)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 8,
+                    backdropFilter: 'blur(2px)'
+                  }}
+                >
+                  <span
+                    style={{
+                      background: '#e11d48',
+                      color: '#ffffff',
+                      fontWeight: 900,
+                      fontSize: '1rem',
+                      letterSpacing: '0.14em',
+                      padding: '8px 20px',
+                      borderRadius: 'var(--radius-sm)',
+                      textTransform: 'uppercase',
+                      boxShadow: '0 4px 16px rgba(225, 29, 72, 0.6)',
+                      border: '1px solid rgba(255, 255, 255, 0.4)',
+                      transform: 'rotate(-4deg)'
+                    }}
+                  >
+                    SOLD OUT
+                  </span>
+                </div>
+              )}
             </div>
 
             {product.images.length > 1 && (
@@ -113,7 +156,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                 <span className="badge badge-purple">{product.category}</span>
-                {product.badge && <span className="badge badge-gold">{product.badge}</span>}
+                {isSoldOut ? (
+                  <span className="badge badge-red">SOLD OUT</span>
+                ) : (
+                  product.badge && <span className="badge badge-gold">{product.badge}</span>
+                )}
               </div>
 
               <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '8px' }}>
@@ -138,9 +185,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               {/* Shapes Selection */}
               {product.shapes && product.shapes.length > 0 && (
                 <div style={{ marginBottom: '16px' }}>
-                  <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-main)', display: 'block', marginBottom: '6px' }}>
-                    💅 Select Nail Shape & Length:
-                  </label>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '6px' }}>
+                    Choose Nail Shape & Length:
+                  </div>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     {product.shapes.map((shape) => (
                       <button
@@ -148,12 +195,12 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                         onClick={() => setSelectedShape(shape)}
                         style={{
                           padding: '6px 12px',
-                          borderRadius: 'var(--radius-sm)',
+                          borderRadius: 'var(--radius-full)',
                           border: selectedShape === shape ? '2px solid var(--primary)' : '1px solid var(--border-color)',
-                          background: selectedShape === shape ? 'var(--primary-light)' : 'white',
+                          background: selectedShape === shape ? 'var(--primary-light)' : '#f4f4f5',
                           color: selectedShape === shape ? 'var(--primary)' : 'var(--text-main)',
-                          fontWeight: 700,
-                          fontSize: '0.8rem',
+                          fontWeight: 600,
+                          fontSize: '0.78rem',
                           cursor: 'pointer'
                         }}
                       >
@@ -166,17 +213,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
               {/* Sizes Selection */}
               {product.sizes && product.sizes.length > 0 && (
-                <div style={{ marginBottom: '20px' }}>
+                <div style={{ marginBottom: '16px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                      📏 Select Nail Size:
-                    </label>
-                    <a
-                      href="#sizing-guide"
-                      onClick={(e) => { e.preventDefault(); alert('Need help measuring? Measure your nail bed width in mm: XS=14,10,11,10,7mm | S=15,11,12,11,8mm | M=16,12,13,12,9mm'); }}
-                      style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 700, textDecoration: 'underline' }}
-                    >
-                      Sizing Guide
+                    <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-main)' }}>
+                      Choose Nail Size:
+                    </div>
+                    <a href="#sizing" onClick={(e) => { e.preventDefault(); alert('PrecyNails Standard Size Guide:\nXS: 3, 6, 5, 7, 9\nS: 2, 5, 4, 6, 9\nM: 1, 4, 3, 5, 8\nL: 0, 3, 2, 4, 7'); }} style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>
+                      📏 Size Guide
                     </a>
                   </div>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -213,13 +256,22 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
               <button
                 className="btn btn-primary"
-                style={{ width: '100%', padding: '13px', fontSize: '0.95rem' }}
+                style={{
+                  width: '100%',
+                  padding: '13px',
+                  fontSize: '0.95rem',
+                  opacity: isSoldOut ? 0.5 : 1,
+                  cursor: isSoldOut ? 'not-allowed' : 'pointer'
+                }}
+                disabled={isSoldOut}
                 onClick={() => {
-                  onAddToCart(product, selectedSize, selectedShape);
-                  onClose();
+                  if (!isSoldOut) {
+                    onAddToCart(product, selectedSize, selectedShape);
+                    onClose();
+                  }
                 }}
               >
-                <ShoppingBag size={18} /> Add Press-On Set to Cart
+                <ShoppingBag size={18} /> {isSoldOut ? 'Out of Stock' : 'Add Press-On Set to Cart'}
               </button>
 
               <button

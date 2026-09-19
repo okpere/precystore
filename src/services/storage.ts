@@ -1,12 +1,12 @@
 import { Product, Order, VendorUser } from '../types';
 
-const VENDOR_KEY = 'ClawsbyFinbars_vendor_v1';
+const VENDOR_KEY = 'Clawed.by.Finbarz_vendor_v1';
 
 // Deprecated local storage methods - return empty arrays to force pulling strictly from API / Supabase
 export const getStoredProducts = (): Product[] => [];
 export const saveStoredProducts = (_products: Product[]) => {
   try {
-    localStorage.removeItem('ClawsbyFinbars_products_v1');
+    localStorage.removeItem('Clawed.by.Finbarz_products_v1');
   } catch (e) {
     // ignore
   }
@@ -15,7 +15,7 @@ export const saveStoredProducts = (_products: Product[]) => {
 export const getStoredOrders = (): Order[] => [];
 export const saveStoredOrders = (_orders: Order[]) => {
   try {
-    localStorage.removeItem('ClawsbyFinbars_orders_v1');
+    localStorage.removeItem('Clawed.by.Finbarz_orders_v1');
   } catch (e) {
     // ignore
   }

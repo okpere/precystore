@@ -48,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <div>
               <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.25rem', color: 'var(--text-main)', lineHeight: 1.1 }}>
-                Precy<span style={{ color: 'var(--primary)' }}>Nails</span>
+                Finbarz <span style={{ color: 'var(--primary)' }}>Beauty solutions</span>
               </div>
               <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600 }}>
                 Press-On Studio

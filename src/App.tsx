@@ -35,8 +35,8 @@ export function App() {
   // Clear any old local storage product/order caches on startup
   useEffect(() => {
     try {
-      localStorage.removeItem('ClawsbyFinbars_products_v1');
-      localStorage.removeItem('ClawsbyFinbars_orders_v1');
+      localStorage.removeItem('Clawed.by.Finbarz_products_v1');
+      localStorage.removeItem('Clawed.by.Finbarz_orders_v1');
     } catch (e) {
       // ignore
     }
@@ -323,7 +323,7 @@ export function App() {
       <footer style={{ background: '#fafafa', borderTop: '1px solid var(--border-color)', padding: '24px 20px', textAlign: 'center', fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: 'auto' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', textAlign: 'center' }}>
           <div>
-            © ClawsbyFinbars Studio • Handcrafted Press-On Nails • Gwarinpa / Lokogoma, Abuja, Nigeria
+            © Clawed.by.Finbarz Studio • Handcrafted Press-On Nails • Gwarinpa / Lokogoma, Abuja, Nigeria
           </div>
 
           <div>

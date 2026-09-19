@@ -135,7 +135,7 @@ export const StoryModal: React.FC<StoryModalProps> = ({ storyId, onClose }) => {
             </div>
 
             <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '12px', borderRadius: 'var(--radius-sm)', fontSize: '0.84rem', color: '#166534' }}>
-              ✨ <strong>100% Reusable:</strong> All ClawsbyFinbars sets can be safely soaked off and reused up to 5 times!
+              ✨ <strong>100% Reusable:</strong> All Clawed.by.Finbarz sets can be safely soaked off and reused up to 5 times!
             </div>
           </div>
         );

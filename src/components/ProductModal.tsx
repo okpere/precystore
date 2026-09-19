@@ -22,7 +22,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const handleWhatsAppBuy = () => {
     const productUrl = `${window.location.origin}/#product=${product.id}`;
     const message = encodeURIComponent(
-      `Hi ClawsbyFinbars! I want to order press-on set:\n\n💅 *${product.name}*\nPrice: ₦${product.price.toLocaleString()}\nShape/Length: ${selectedShape}\nNail Size: ${selectedSize}\nLink: ${productUrl}`
+      `Hi Clawed.by.Finbarz! I want to order press-on set:\n\n💅 *${product.name}*\nPrice: ₦${product.price.toLocaleString()}\nShape/Length: ${selectedShape}\nNail Size: ${selectedSize}\nLink: ${productUrl}`
     );
     window.open(`https://wa.me/2348022642840?text=${message}`, '_blank');
   };

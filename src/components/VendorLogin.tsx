@@ -28,13 +28,13 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
     }
 
     setIsLoading(true);
-    const email = emailOrHandle.includes('@') ? emailOrHandle : `${emailOrHandle}@ClawsbyFinbars.ng`;
-    const handle = emailOrHandle.startsWith('@') ? emailOrHandle : `@${emailOrHandle.replace(/[^a-zA-Z0-9_.]/g, '') || 'ClawsbyFinbars'}`;
+    const email = emailOrHandle.includes('@') ? emailOrHandle : `${emailOrHandle}@Clawed.by.Finbarz`;
+    const handle = emailOrHandle.startsWith('@') ? emailOrHandle : `@${emailOrHandle.replace(/[^a-zA-Z0-9_.]/g, '') || 'Clawed.by.Finbarz'}`;
 
     try {
       if (isRegistering) {
         // Register API endpoint call
-        const res = await api.register(email, password, shopName || 'ClawsbyFinbars Studio Official', handle);
+        const res = await api.register(email, password, shopName || 'Clawed.by.Finbarz Studio Official', handle);
         if (res.error) {
           setErrorMsg(res.error);
           setIsLoading(false);
@@ -44,7 +44,7 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
         onLoginSuccess({
           email: res.admin?.email || email,
           handle: res.admin?.handle || handle,
-          shopName: res.admin?.shopName || shopName || 'ClawsbyFinbars Studio Official',
+          shopName: res.admin?.shopName || shopName || 'Clawed.by.Finbarz Studio Official',
           isLoggedIn: true,
           token: res.token
         });
@@ -61,7 +61,7 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
         onLoginSuccess({
           email: res.admin?.email || email,
           handle: res.admin?.handle || handle,
-          shopName: res.admin?.shopName || shopName || 'ClawsbyFinbars Studio Official',
+          shopName: res.admin?.shopName || shopName || 'Clawed.by.Finbarz Studio Official',
           isLoggedIn: true,
           token: res.token
         });
@@ -72,7 +72,7 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
       onLoginSuccess({
         email,
         handle,
-        shopName: shopName || 'ClawsbyFinbars Studio Official',
+        shopName: shopName || 'Clawed.by.Finbarz Studio Official',
         isLoggedIn: true
       });
     } finally {
@@ -83,9 +83,9 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
   const handleDemoLogin = () => {
     confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
     onLoginSuccess({
-      email: 'vendor@ClawsbyFinbars.ng',
-      handle: '@ClawsbyFinbars.ng',
-      shopName: 'ClawsbyFinbars Luxury Press-On Studio',
+      email: 'vendor@Clawed.by.Finbarz',
+      handle: '@Clawed.by.Finbarz',
+      shopName: 'Clawed.by.Finbarz Luxury Press-On Studio',
       isLoggedIn: true
     });
   };
@@ -175,7 +175,7 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
               <Sparkles size={20} color="#db2777" />
               <div>
                 <div style={{ fontWeight: 800, fontSize: '0.85rem', color: '#db2777' }}>Demo Vendor Access</div>
-                <div style={{ fontSize: '0.75rem', color: '#be185d' }}>Instant 1-click login as @ClawsbyFinbars.ng</div>
+                <div style={{ fontSize: '0.75rem', color: '#be185d' }}>Instant 1-click login as @Clawed.by.Finbarz</div>
               </div>
             </div>
 
@@ -201,7 +201,7 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
                 <Store size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                 <input
                   type="text"
-                  placeholder="e.g. ClawsbyFinbars Luxury Studio"
+                  placeholder="e.g. Clawed.by.Finbarz Luxury Studio"
                   value={shopName}
                   onChange={(e) => setShopName(e.target.value)}
                   style={{
@@ -225,7 +225,7 @@ export const VendorLogin: React.FC<VendorLoginProps> = ({ onLoginSuccess, onGoTo
               <Mail size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input
                 type="text"
-                placeholder="e.g. @ClawsbyFinbars.ng or vendor@mail.com"
+                placeholder="e.g. @Clawed.by.Finbarz or vendor@mail.com"
                 value={emailOrHandle}
                 onChange={(e) => setEmailOrHandle(e.target.value)}
                 style={{
